@@ -33,6 +33,7 @@ const ContestsManagement = lazy(() => import('./pages/admin/ContestsManagement')
 const InstancesManagement = lazy(() => import('./pages/admin/InstancesManagement'));
 const TutorialPage = lazy(() => import('./pages/TutorialPage'));
 const LandingPage = lazy(() => import('./pages/landing/LandingPage'));
+const PracticePage = lazy(() => import('./pages/PracticePage'));
 
 const routes: RouteObject[] = [
   {
@@ -68,6 +69,14 @@ const routes: RouteObject[] = [
         element: (
           <ProtectedRoute>
             <TutorialPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: 'practice',
+        element: (
+          <ProtectedRoute>
+            <PracticePage />
           </ProtectedRoute>
         ),
       },
