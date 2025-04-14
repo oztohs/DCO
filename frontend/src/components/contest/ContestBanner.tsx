@@ -93,13 +93,17 @@ const ContestBanner: React.FC = () => {
                     backgroundColor: avatarBgColor
                   }}
                 >
-                  {contest.name.charAt(0).toUpperCase()}
+                  {contest?.name ? contest.name.charAt(0).toUpperCase() : "?"}
                 </Avatar>
-                <h4><b>{contest.name.charAt(0).toUpperCase() + contest.name.slice(1)}</b></h4>
+                <h4><b>{contest?.name ? contest.name.charAt(0).toUpperCase() + contest.name.slice(1) : "?"}</b></h4>
                 {new Date(contest.startTime) > new Date() ? (
                   <p className='ramaining-time'>Starts in {formatRemainingTime(contest.startTime)}</p>
                 ) : (
-                  <p className='ramaining-time'>Ends in {formatRemainingTime(contest.endTime)}</p>
+                  contest.endTime ? (
+                    <p className='ramaining-time'>Ends in {formatRemainingTime(contest.endTime)}</p>
+                  ) : (
+                    <p className='ramaining-time'>No participants yet</p> // 또는 'End time not set'
+                  )
                 )}
                 <div className='contest_reward_box'>
                   <p className='banner-exp'>Reward</p>

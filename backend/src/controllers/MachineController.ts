@@ -193,12 +193,13 @@ export const getActiveMachines = async (req: Request, res: Response): Promise<vo
     const machines = await Machine.find({ isActive: true }).sort({ playerCount: -1 })
     .select('-hints -flag -__v -reviews -createdAt -updatedAt -isActive -description -exp -amiId');
     if (machines.length === 0) {
-      res.status(404).json({ 
-        message: "ERROR", 
-        msg: 'No active machines found.' 
+      res.status(200).json({ 
+        message: "OK", 
+        msg: 'No active machines found.', 
+        machines: [] 
       });
       return;
-    };
+    }      
     // Update average rating for each machine
     const machineReviews = await Machine.find({ isActive: true }).select('reviews');
     await machineReviews.forEach(async (machine) => {

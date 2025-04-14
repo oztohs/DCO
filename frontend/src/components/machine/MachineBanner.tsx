@@ -89,9 +89,11 @@ const MachineBanner: React.FC = () => {
                     backgroundColor: avatarBgColor
                   }}
                 >
-                  {machine.name.charAt(0).toUpperCase()}
+                  {machine?.name ? machine.name.charAt(0).toUpperCase() : "?"}
                 </Avatar>
-                <h4><b>{machine.name.charAt(0).toUpperCase() + machine.name.slice(1)}</b></h4>
+                <h4>
+                  <b>
+                    {machine?.name ? machine.name.charAt(0).toUpperCase() + machine.name.slice(1) : "?"}</b></h4>
                 <div className='machine_reward_box'>
                   <p className='banner-exp'>Reward</p>
                   <p className='exp'>{machine.exp} EXP</p>
@@ -108,7 +110,7 @@ const MachineBanner: React.FC = () => {
                       },
                     }}
                   />
-                  <span className='rating-text'>{machine.rating.toFixed(1)}</span>
+                  <span className='rating-text'>{typeof machine?.rating === 'number' ? machine.rating.toFixed(1) : 'N/A'}</span>
                 </Box>
                 <Button
                   className='go-to-machine-btn'

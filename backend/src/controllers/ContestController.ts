@@ -192,12 +192,16 @@ export const getActiveContests = async (req: Request, res: Response): Promise<vo
     try {
         const contests = await Contest.find({ isActive: true }).sort({ startTime: -1 }).select('-__v -createdAt -updatedAt -description');
         if (contests.length === 0) {
-            res.status(404).json({ 
-                message: "ERROR", 
-                msg: 'No active contests found.' 
+            res.status(200).json({ 
+              message: "OK",
+              msg: 'No active contests found.',
+              notStartedContests: [],
+              ongoingContests: [],
+              endedContests: [],
             });
             return;
         }
+          
         const currentTime = new Date();
         const notStartedContests = contests.filter(contest => currentTime < contest.startTime);
         const ongoingContests = contests.filter(contest => currentTime >= contest.startTime && currentTime <= contest.endTime);
