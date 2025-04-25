@@ -7,6 +7,7 @@ const PracticePage: React.FC = () => {
   const [hintShown, setHintShown] = useState(false);
   const [flagInput, setFlagInput] = useState('');
   const [message, setMessage] = useState('');
+  const [expandedCard, setExpandedCard] = useState<number | null>(null);
 
   const dummyMachine = {
     name: 'PracticeMachine-01',
@@ -35,10 +36,24 @@ const PracticePage: React.FC = () => {
   return (
     <Main>
       <div className="practice-page-container">
-        <h1>Now Playing: Practice</h1>
+        
 
         {/* 1. Connect */}
-        <div className="card">
+        <div
+          className={`card ${expandedCard === 0 ? 'expanded' : ''}`}
+          onClick={() => expandedCard === null && setExpandedCard(0)}
+        >
+          {expandedCard === 0 && (
+            <button
+              className="close-button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setExpandedCard(null);
+              }}
+            >
+              ✕
+            </button>
+          )}
           <h2>🔗 Connect</h2>
           <p>
             Connect using OpenVPN<br />
@@ -50,13 +65,26 @@ const PracticePage: React.FC = () => {
         </div>
 
         {/* 2. Spawn Machine */}
-        <div className="card">
+        <div
+          className={`card ${expandedCard === 1 ? 'expanded' : ''}`}
+          onClick={() => expandedCard === null && setExpandedCard(1)}
+        >
+          {expandedCard === 1 && (
+            <button
+              className="close-button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setExpandedCard(null);
+              }}
+            >
+              ✕
+            </button>
+          )}
           <h2>💻 Spawn Machine</h2>
           <p>Create machine and start hacking.</p>
           <button onClick={handleSpawnMachine} disabled={machineSpawned}>
             {machineSpawned ? 'Machine Running...' : 'Start Instance'}
           </button>
-
           {machineSpawned && (
             <div className="fake-terminal">
               <p>user@dco:~$ ssh user@{dummyMachine.ip}</p>
@@ -68,17 +96,49 @@ const PracticePage: React.FC = () => {
         </div>
 
         {/* 3. Hints */}
-        <div className="card">
+        <div
+          className={`card ${expandedCard === 2 ? 'expanded' : ''}`}
+          onClick={() => expandedCard === null && setExpandedCard(2)}
+        >
+          {expandedCard === 2 && (
+            <button
+              className="close-button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setExpandedCard(null);
+              }}
+            >
+              ✕
+            </button>
+          )}
           <h2>❓ Hints</h2>
           <p>If you need a hint, press the button</p>
           <button onClick={handleShowHint} disabled={!machineSpawned || hintShown}>
             {hintShown ? 'Hint Revealed' : 'Show Hint'}
           </button>
-          {hintShown && <p className="hint-text">💡 Try checking open ports with <code>nmap</code>.</p>}
+          {hintShown && (
+            <p className="hint-text">
+              💡 Try checking open ports with <code>nmap</code>.
+            </p>
+          )}
         </div>
 
         {/* 4. Submit Flag */}
-        <div className="card">
+        <div
+          className={`card ${expandedCard === 3 ? 'expanded' : ''}`}
+          onClick={() => expandedCard === null && setExpandedCard(3)}
+        >
+          {expandedCard === 3 && (
+            <button
+              className="close-button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setExpandedCard(null);
+              }}
+            >
+              ✕
+            </button>
+          )}
           <h2>🏁 Submit Flag</h2>
           <form onSubmit={handleSubmitFlag} className="flag-form">
             <input

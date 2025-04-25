@@ -4,6 +4,7 @@ import { MdOutlineLeaderboard, MdLeaderboard } from "react-icons/md";
 import { FaQuestionCircle, FaRegQuestionCircle } from "react-icons/fa";
 import { PiComputerTowerBold, PiComputerTowerFill } from "react-icons/pi";
 import { RiArrowLeftDoubleFill, RiArrowRightDoubleFill } from "react-icons/ri";
+import { FaRegCirclePlay } from "react-icons/fa6";
 import EmojiEventsOutlinedIcon from '@mui/icons-material/EmojiEventsOutlined';
 import EmojiEventsIconRounded from '@mui/icons-material/EmojiEventsRounded';
 import styles from '../../assets/scss/section/_sidebar.module.scss';
@@ -110,6 +111,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, toggleSidebar }) => {
               >
                 {getMenuIcon('/machine', <PiComputerTowerFill className={styles.menuIcon} />, <PiComputerTowerBold className={styles.menuIcon} />)}
                 <div className={styles.label}>Machines</div>
+              </Link>
+              <Link
+                to="/practice"
+                className={`${styles.verticalMenuItem} ${location.pathname.startsWith('/practice') ? styles.selected : ''}`}
+                data-tooltip="Practice"
+              >
+                {getMenuIcon('/practice', <FaRegCirclePlay className={styles.menuIcon} />, <FaRegCirclePlay className={styles.menuIcon} />)}
+                <div className={styles.label}>Practices</div>
               </Link>
             </li>
           </div>
