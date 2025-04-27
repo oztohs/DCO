@@ -89,6 +89,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, toggleSidebar }) => {
                 <div className={styles.label}>How to Play</div>
               </Link>
               <Link
+                to="/practice"
+                className={`${styles.verticalMenuItem} ${location.pathname.startsWith('/practice') ? styles.selected : ''}`}
+                data-tooltip="Practice"
+              >
+                {getMenuIcon('/practice', <FaRegCirclePlay className={styles.menuIcon} />, <FaRegCirclePlay className={styles.menuIcon} />)}
+                <div className={styles.label}>Practices</div>
+              </Link>
+              <Link
                 to="/leaderboard"
                 className={`${styles.verticalMenuItem} ${location.pathname.startsWith('/leaderboard') ? styles.selected : ''}`}
                 data-tooltip="LeaderBoard"
@@ -111,14 +119,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, toggleSidebar }) => {
               >
                 {getMenuIcon('/machine', <PiComputerTowerFill className={styles.menuIcon} />, <PiComputerTowerBold className={styles.menuIcon} />)}
                 <div className={styles.label}>Machines</div>
-              </Link>
-              <Link
-                to="/practice"
-                className={`${styles.verticalMenuItem} ${location.pathname.startsWith('/practice') ? styles.selected : ''}`}
-                data-tooltip="Practice"
-              >
-                {getMenuIcon('/practice', <FaRegCirclePlay className={styles.menuIcon} />, <FaRegCirclePlay className={styles.menuIcon} />)}
-                <div className={styles.label}>Practices</div>
               </Link>
             </li>
           </div>

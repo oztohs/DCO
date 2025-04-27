@@ -1,66 +1,57 @@
 @use "../style" as *;
 
+.practice-page-wrapper {
+  padding: 20px;
+  color: white;
+  height: calc(100vh - 80px); /* 헤더나 마진 빼고 꽉 채우기 */
+  overflow-y: auto; /* 전체 페이지에서 스크롤 */
+}
+
 .practice-page-container {
   @include background_set;
   @include scrollbar-none;
   color: var(--color-white);
+  overflow: auto;
   display: grid;
-  grid-template-columns: repeat(auto-fill, 500px); 
-  grid-auto-rows: 300px;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
   gap: 20px;
-  padding: 20px;
-  margin: 15px;
-  justify-content: center;
+  padding: 10px;
 }
+
+.practice-title {
+  text-align: center;
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 24px;
+}
+
 
 .card {
-  background-color: #2c2c2c;
+  background-color: #1e1e1e;
+  border: 1px solid #333;
   border-radius: 12px;
-  padding: 24px;
-  margin-top: 70px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  transition: all 0.3s ease-in-out;
-  cursor: pointer;
+  padding: 16px;
+  height: 200px; /* 🔥 고정 높이로 줄이기 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
   position: relative;
-  z-index: 1;
-
-  h2 {
-    margin-bottom: 12px;
-    font-size: 20px;
-  }
-
-  p {
-    margin-bottom: 12px;
-    line-height: 1.5;
-  }
-
-  button {
-    background: #444;
-    color: #fff;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.2s;
-
-    &:hover {
-      background: #666;
-    }
-  }
-
-  &.expanded {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 70vw;
-    height: 84vh;
-    margin: 0;
-    background-color: #1e1e1e;
-    z-index: 999;
-    overflow-y: auto;
-    transition: all 0.4s ease;
-  }
+  overflow: hidden;
 }
+
+
+.card.expanded {
+  grid-column: 1 / -1;
+  min-height: 90vh; /* 화면 70% 정도 채우기 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* 내부 요소 수직 중앙정렬 */
+  align-items: center; /* 내부 요소 수평 중앙정렬 */
+}
+
+
 
 .close-button {
   position: absolute;
@@ -72,4 +63,232 @@
   color: #fff;
   cursor: pointer;
   z-index: 1000;
+}
+
+/* 머신 추가 버튼 */
+.add-machine-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-top: 20px;
+  cursor: pointer;
+}
+
+.add-machine-icons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.machine-icon {
+  font-size: 70px;
+}
+
+.plus-icon {
+  font-size: 50px;
+}
+
+.add-machine-text {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.add-machine-form {
+  margin-top: 24px;
+  width: 80%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 인풋, 셀렉트 통일 */
+.input-field {
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #555;
+  background: #222;
+  color: white;
+}
+
+/* 기본 버튼 스타일 */
+.primary-button {
+  margin-top: 16px;
+  padding: 10px;
+  background: #007bff;
+  color: white;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* 머신 추가 완료 화면 */
+.machine-added-message {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.success-title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.success-description {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+/* 플레이 시작 화면 */
+.start-banner {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.machine-info {
+  margin-bottom: 16px;
+  font-size: 18px;
+}
+
+/* 플레이 중 화면 (양쪽 나누기) */
+.play-area {
+  display: flex;
+  gap: 20px;
+  height: 100%;
+  width: 100%;
+  overflow-y: auto; /* 여기 스크롤 추가 */
+}
+
+/* 왼쪽 메뉴 */
+.left-menu {
+  flex: 0 0 50%;
+  border-right: 1px solid #555;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 100%;
+  overflow: visible; /* 따로 스크롤 안 함 */
+}
+
+.playing-title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.stage-section {
+  border-left: 2px solid white;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* 간격 좀 더 넓게 */
+}
+
+.stage-box {
+  margin-bottom: 30px;
+}
+
+.stage-button {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background: transparent;
+  border: 2px solid white;
+  border-radius: 20px;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* Submit Flag Form */
+.submit-flag-form {
+  margin-bottom: 30px;
+
+  input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 8px;
+    border-radius: 8px;
+    border: 1px solid #555;
+    background: #222;
+    color: white;
+  }
+
+  button {
+    margin-top: 10px;
+    padding: 8px 16px;
+    background: #007bff;
+    color: white;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .submit-result {
+    margin-top: 10px;
+
+    &.correct {
+      color: lime;
+    }
+
+    &.incorrect {
+      color: red;
+    }
+  }
+}
+
+/* 오른쪽 터미널 영역 */
+.right-terminal {
+  flex: 0 0 50%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* 터미널 컨테이너 */
+.terminal-container {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #111;
+  border-radius: 12px;
+  border: 1px solid #555;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%; /* 부모 맞춰서 딱 맞게 */
+  max-height: 500px; /* 여기서 높이 제한 */
+}
+
+/* 터미널 출력 */
+.terminal-output {
+  color: lime;
+  font-family: monospace;
+  font-size: 14px;
+  white-space: pre-wrap;
+  overflow-y: auto;
+  flex-grow: 1;
+  margin-bottom: 10px;
+}
+
+/* 터미널 입력 */
+.terminal-input {
+  padding: 10px;
+  background: #222;
+  border: 1px solid #555;
+  border-radius: 8px;
+  color: white;
+  font-family: monospace;
+}
+
+/* 인스턴스 시작 전 메시지 */
+.terminal-placeholder {
+  padding: 20px;
+  background: #222;
+  border: 1px dashed #555;
+  color: #888;
+  text-align: center;
+  border-radius: 12px;
 }
