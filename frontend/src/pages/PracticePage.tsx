@@ -14,10 +14,14 @@ const PracticePage: React.FC = () => {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [showSimulator, setShowSimulator] = useState(false);
   const [isInstanceStarted, setIsInstanceStarted] = useState(false);
+  const [isVPNConnected, setIsVPNConnected] = useState(false);
   const [terminalInput, setTerminalInput] = useState('');
   const [terminalOutput, setTerminalOutput] = useState<string[]>([]);
   const [submittedFlag, setSubmittedFlag] = useState('');
   const [flagResult, setFlagResult] = useState('');
+  const [isFlagCorrect, setIsFlagCorrect] = useState(false);
+  const [isHintOpened, setIsHintOpened] = useState(false);
+
 
   const dummyMachine = {
     name: 'PracticeMachine-01',
@@ -25,46 +29,22 @@ const PracticePage: React.FC = () => {
     ovpnUrl: '/dummy/practice.ovpn',
   };
 
-  const handleSpawnMachine = () => {
-    setMachineSpawned(true);
-    setMessage('가상 머신이 생성되었습니다.');
-  };
-
-  const handleShowHint = () => {
-    setHintShown(true);
-  };
-
-  const handleSubmitFlag = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (flagInput === 'DCO{correct_flag}') {
-      setMessage('정답입니다! 🎉');
+  const handleCommand = (command: string) => {
+    let newOutput = [...terminalOutput];
+  
+    if (command.startsWith('sudo openvpn practice.ovpn')) {
+      newOutput.push(`Connecting to VPN using ${dummyMachine.name}.ovpn...`);
+      newOutput.push(`VPN connected successfully.`);
+      setIsVPNConnected(true); // VPN 연결됨 표시
+    } else if (command.startsWith('ping 10.0.0.15')) {
+      newOutput.push(`Pinging ${dummyMachine.ip}...`);
+      newOutput.push(`64 bytes from ${dummyMachine.ip}: icmp_seq=1 ttl=64 time=0.123 ms`);
     } else {
-      setMessage('틀렸습니다. 다시 시도해보세요.');
+      newOutput.push(`Command not found: ${command}`);
     }
+  
+    setTerminalOutput(newOutput);
   };
-
-  function handleCommand(cmd: string) {
-    if (cmd.trim() === '') return;
-    let response = '';
-    const command = cmd.toLowerCase().trim();
-
-    if (command === 'help') {
-      response = 'Available commands: help, ls, cat [filename], clear';
-    } else if (command === 'ls') {
-      response = 'flag.txt\nnotes.txt';
-    } else if (command === 'cat flag.txt') {
-      response = 'FLAG{practice_flag}';
-    } else if (command === 'cat notes.txt') {
-      response = 'Nothing useful here.';
-    } else if (command === 'clear') {
-      setTerminalOutput([]);
-      return;
-    } else {
-      response = `Command not recognized: ${cmd}`;
-    }
-
-    setTerminalOutput(prev => [...prev, `$ ${cmd}`, response]);
-  }
 
   return (
     <Main>
@@ -85,7 +65,7 @@ const PracticePage: React.FC = () => {
                 <>
                   {showSuccessMessage ? (
                     <div className="machine-added-message">
-                      <p>머신 생성 완료가 되었으며 관리자의 승인이 완료되면 머신이 보입니다.</p>
+                      <p>머신 생성 완료가 되었으며, 관리자의 승인이 완료되면 머신이 보이게 됩니다.</p>
                       <div className="success-title">✅ Machine Added!</div>
                       <div className="success-description">Machine is registered successfully.<br />Please wait for approval from the admin.</div>
                       <button className="primary-button" onClick={() => { setShowForm(false); setShowSuccessMessage(false); }}>
@@ -104,22 +84,21 @@ const PracticePage: React.FC = () => {
                         </div>
                       ) : (
                         <div className="add-machine-form">
-                          <input type="text" placeholder="Machine Name" className="input-field" />
-                          <select className="input-field">
-                            <option>--Select Category--</option>
-                            <option>Web</option>
-                            <option>Crypto</option>
-                            <option>Pwn</option>
+                          체험을 위해 미리 작성된 예시입니다.
+                          <input type="text" value="Practice" className="input-field" readOnly />
+                          <select className="input-field" disabled>
+                            <option>Network</option>
                           </select>
-                          <input type="text" placeholder="AMI ID" className="input-field" />
-                          <input type="text" placeholder="Flag" className="input-field" />
-                          <input type="text" placeholder="Description" className="input-field" />
-                          <input type="text" placeholder="Reward" className="input-field" />
+                          <input type="text" value="ami-1234567890abcdef0" className="input-field" readOnly />
+                          <input type="text" value="HTO{practice_flag}" className="input-field" readOnly />
+                          <input type="text" value="This is a practice machine for network hacking." className="input-field" readOnly />
+                          <input type="text" value="50" className="input-field" readOnly />
                           <button className="primary-button" onClick={() => setShowSuccessMessage(true)}>
                             Add Machine
                           </button>
                         </div>
                       )}
+
                     </>
                   )}
                 </>
@@ -136,8 +115,12 @@ const PracticePage: React.FC = () => {
                   setExpandedCard(null);
                   setShowSimulator(false);
                   setIsInstanceStarted(false);
+                  setIsVPNConnected(false); 
                   setTerminalInput('');
                   setTerminalOutput([]);
+                  setFlagInput('');
+                  setIsFlagCorrect(false);
+                  setIsHintOpened(false);
                 }}>
                   ✕
                 </button>
@@ -148,14 +131,28 @@ const PracticePage: React.FC = () => {
                 <>
                   {!showSimulator ? (
                     <div className="start-banner">
-                      <div className="machine-info">
-                        <strong>Machine name:</strong> Test<br />
-                        <strong>Description:</strong> 이 머신을 플레이하세요.
+                    <div className="thumbnail">
+                      <span>P</span>
+                    </div>
+                  
+                    <div className="machine-info">
+                      <p className="machine-name"><b>Practice</b></p>
+                      <p className="machine-category"><b>Category:</b> Network</p>
+                      <p className="description">"이 머신을 플레이하세요."</p>
+                    </div>
+                  
+                    <div className="machine-meta">
+                      <div className="reward-box">
+                        <p className="label">Reward</p>
+                        <p className="reward">50 EXP</p>
                       </div>
+                  
                       <button className="primary-button" onClick={() => setShowSimulator(true)}>
-                        ▶️ Play
+                        Play
                       </button>
                     </div>
+                  </div>
+                  
                   ) : (
                     <div className="play-area">
                       {/* 왼쪽 메뉴 */}
@@ -165,25 +162,40 @@ const PracticePage: React.FC = () => {
                           <div className="stage-box">
                             <h2>🔒 Connect</h2>
                             <p>Connect using OpenVPN<br />Download your VPN configuration and connect.</p>
-                            <button className="stage-button">⬇️ Download</button>
+                            <br></br>
+                            <a href={dummyMachine.ovpnUrl} download className="stage-button">
+                              ⬇️ Download
+                            </a>
+
                           </div>
                           <div className="stage-box">
                             <h2>🏠 Spawn Machine</h2>
                             <p>Create machine and Start hacking.</p>
                             <button className="stage-button" onClick={() => setIsInstanceStarted(true)}>
-                              ▶️ Start Instance
+                              {isVPNConnected ? dummyMachine.ip : '▶️ Start Instance'}
                             </button>
+
                           </div>
                           <div className="stage-box">
                             <h2>❓ Hints</h2>
                             <p>If you need a hint, Press the button</p>
-                            <button className="stage-button" disabled>🔒</button>
+                            
+                            {!isHintOpened ? (
+                              <button className="stage-button" onClick={() => setIsHintOpened(true)}>
+                                🔒
+                              </button>
+                            ) : (
+                              <div className="hint-box">
+                                <p>🔓 Hint: HTO!</p>
+                              </div>
+                            )}
                           </div>
+
                           <div className="submit-flag-form">
                             <h2>🚩 Submit Flag</h2>
                             <input type="text" placeholder="Enter your flag" value={submittedFlag} onChange={(e) => setSubmittedFlag(e.target.value)} />
                             <button onClick={() => {
-                              if (submittedFlag.trim() === 'FLAG{practice_flag}') {
+                              if (submittedFlag.trim() === 'HTO{practice_flag}') {
                                 setFlagResult('✅ Correct! Well done.');
                               } else {
                                 setFlagResult('❌ Incorrect flag. Try again.');
@@ -205,7 +217,9 @@ const PracticePage: React.FC = () => {
                         {isInstanceStarted ? (
                           <div className="terminal-container">
                             <div className="terminal-output">
-                              {terminalOutput.length > 0 ? terminalOutput.join('\n') : 'Welcome to your instance!\nType a command...'}
+                              {terminalOutput.length > 0 
+                                ? terminalOutput.join('\n') 
+                                : `Welcome to your instance!\n\nType "sudo openvpn <profile>.ovpn" to connect VPN.\nThen "ping ${dummyMachine.ip}" to test.`}
                             </div>
                             <input
                               type="text"
@@ -222,11 +236,12 @@ const PracticePage: React.FC = () => {
                             />
                           </div>
                         ) : (
-                          <div className="terminal-placeholder">
-                            Start the instance to begin hacking!
+                          <div className="terminal-waiting">
+                            Click ▶️ Start Instance to begin.
                           </div>
                         )}
                       </div>
+
                     </div>
                   )}
                 </>

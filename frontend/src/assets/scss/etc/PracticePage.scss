@@ -27,11 +27,12 @@
 
 
 .card {
+  margin-top: 30%;
   background-color: #1e1e1e;
   border: 1px solid #333;
   border-radius: 12px;
   padding: 16px;
-  height: 200px; /* 🔥 고정 높이로 줄이기 */
+  height: 300px; /* 🔥 고정 높이로 줄이기 */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -39,6 +40,7 @@
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  cursor: pointer;
 }
 
 
@@ -49,6 +51,7 @@
   flex-direction: column;
   justify-content: center; /* 내부 요소 수직 중앙정렬 */
   align-items: center; /* 내부 요소 수평 중앙정렬 */
+  cursor:auto;
 }
 
 
@@ -112,17 +115,6 @@
   color: white;
 }
 
-/* 기본 버튼 스타일 */
-.primary-button {
-  margin-top: 16px;
-  padding: 10px;
-  background: #007bff;
-  color: white;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  font-weight: bold;
-}
 
 /* 머신 추가 완료 화면 */
 .machine-added-message {
@@ -141,15 +133,107 @@
   margin-bottom: 20px;
 }
 
-/* 플레이 시작 화면 */
 .start-banner {
   margin-top: 20px;
-  text-align: center;
+  background-color: #1f2937;
+  color: white;
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  width: 60%;
+
+  .thumbnail {
+    width: 80px;
+    height: 80px;
+    background-color: #6b7280;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    font-weight: bold;
+    color: white;
+  }
+
+  .machine-info {
+    flex-grow: 1;
+
+    .machine-name {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .machine-category {
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .description {
+      font-size: 14px;
+      color: #d1d5db;
+    }
+  }
+
+  .machine-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 12px;
+    justify-content: space-between; // 추가
+    height: 100%; 
+
+    .reward-box {
+      background-color: #111827;
+      padding: 8px 16px;
+      border-radius: 8px;
+      text-align: center;
+      width: 150px;
+      
+
+      .label {
+        font-size: 12px;
+        color: #9ca3af;
+      }
+
+      .reward {
+        font-size: 18px;
+        font-weight: bold;
+        color: #facc15;
+      }
+    }
+  }
 }
 
-.machine-info {
-  margin-bottom: 16px;
-  font-size: 18px;
+.primary-button {
+  position: relative;
+  font-weight: 600;
+  width: clamp(100px, 15vw, 10px);
+  height: clamp(36px, 6vh, 48px);
+  box-shadow: 0px 2px 4px rgba(44, 39, 56, 0.08), 0px 4px 8px rgba(44, 39, 56, 0.08);
+  border-radius: 6px;
+  background: var(--color-layout);
+  color: var(--color-white);
+  font-size: clamp(14px, 2vw, 16px);
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+  border: 2px solid transparent;
+  @media (max-width: 768px) {
+    position: relative;
+    right: auto;
+    top: auto;
+    margin: 16px auto;
+    display: block;
+  }
+
+    &:hover {
+      background: var(--blue-400);
+      border: 2px solid transparent;
+      transform: translateY(-2px);
+      filter: drop-shadow(0 0 10px var(--blue-500));
+      }
 }
 
 /* 플레이 중 화면 (양쪽 나누기) */
@@ -204,12 +288,13 @@
 
 /* Submit Flag Form */
 .submit-flag-form {
-  margin-bottom: 30px;
+  margin-bottom: 10px;
+ 
 
   input {
     width: 100%;
     padding: 8px;
-    margin-top: 8px;
+    margin-top: 4px;
     border-radius: 8px;
     border: 1px solid #555;
     background: #222;
