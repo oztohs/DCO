@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { MdOutlineLeaderboard, MdLeaderboard } from "react-icons/md";
-import { FaQuestionCircle, FaRegQuestionCircle } from "react-icons/fa";
+import { FaQuestionCircle, FaRegQuestionCircle, FaBook } from "react-icons/fa";
 import { PiComputerTowerBold, PiComputerTowerFill } from "react-icons/pi";
 import { RiArrowLeftDoubleFill, RiArrowRightDoubleFill } from "react-icons/ri";
-import { FaRegCirclePlay } from "react-icons/fa6";
 import EmojiEventsOutlinedIcon from '@mui/icons-material/EmojiEventsOutlined';
 import EmojiEventsIconRounded from '@mui/icons-material/EmojiEventsRounded';
 import styles from '../../assets/scss/section/_sidebar.module.scss';
@@ -89,12 +88,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, toggleSidebar }) => {
                 <div className={styles.label}>How to Play</div>
               </Link>
               <Link
-                to="/practice"
-                className={`${styles.verticalMenuItem} ${location.pathname.startsWith('/practice') ? styles.selected : ''}`}
-                data-tooltip="Practice"
+                to="/manual"
+                className={`${styles.verticalMenuItem} ${location.pathname.startsWith('/manual') ? styles.selected : ''}`}
+                data-tooltip="Manual"
               >
-                {getMenuIcon('/practice', <FaRegCirclePlay className={styles.menuIcon} />, <FaRegCirclePlay className={styles.menuIcon} />)}
-                <div className={styles.label}>Practices</div>
+                {getMenuIcon('/manual', <FaBook className={styles.menuIcon} />, <FaBook className={styles.menuIcon} />)}
+                <div className={styles.label}>Manual</div>
               </Link>
               <Link
                 to="/leaderboard"
