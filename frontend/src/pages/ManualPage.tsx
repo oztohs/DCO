@@ -62,7 +62,6 @@ const ManualPage: React.FC = () => {
               <div className="page page-one active">
                 <div className="dialog-wrapper">
                   <img src={Hackcat} alt="Guide Avatar" className="guide-avatar" />
-                  {/* ✅ 흔들림/글리치 효과 클래스 추가 */}
                   <div className="speech-bubble glitch-bubble">
                     <h2 className="bubble-title">{currentDialogData.title}</h2>
                     {currentDialogData.message && <p>{currentDialogData.message}</p>}
@@ -79,37 +78,50 @@ const ManualPage: React.FC = () => {
               </div>
             )}
 
-            {/* --- 페이지 2 --- */}
+            {/* --- 페이지 2 (4개의 말풍선) --- */}
             {currentPage === 2 && (
               <div className="page page-two active">
+                
+                {/* Tutorial */}
                 <div className="dialog-wrapper">
                   <img src={Hackcat} alt="Guide Avatar" className="guide-avatar" />
-                  {/* ✅ 흔들림/글리치 효과 클래스 추가 */}
                   <div className="speech-bubble glitch-bubble">
-                    <h2 className="bubble-title">{t('nextStepsTitle')}</h2>
-                    <p>{t('nextStepsMessage')}</p>
-                    
-                    {/* --- 선택지 카드 --- */}
-                    <div className="next-steps-container">
-                      <Link to="/tutorial" className="step-card">
-                        <h3>{t('tutorialLabel')}</h3>
-                        <p>{t('tutorialDescription')}</p>
-                      </Link>
-                      <Link to="/machine" className="step-card">
-                        <h3>{t('playLabel')}</h3>
-                        <p>{t('playDescription')}</p>
-                      </Link>
-                      <Link to="/tutorial/play" className="step-card">
-                        <h3>{t('startTutorialLabel')}</h3>
-                        <p>{t('startTutorialDescription')}</p>
-                      </Link>
-                      <Link to="/learn" className="step-card">
-                        <h3>{t('learnBasicsLabel')}</h3>
-                        <p>{t('learnBasicsDescription')}</p>
-                      </Link>
-                    </div>
+                    <h2 className="bubble-title">{t('tutorialLabel')}</h2>
+                    <p>{t('tutorialDescription')}</p>
+                    <Link to="/tutorial" className="nav-button">Go</Link>
                   </div>
                 </div>
+
+                {/* Play Machines */}
+                <div className="dialog-wrapper">
+                  <img src={Hackcat} alt="Guide Avatar" className="guide-avatar" />
+                  <div className="speech-bubble glitch-bubble">
+                    <h2 className="bubble-title">{t('playLabel')}</h2>
+                    <p>{t('playDescription')}</p>
+                    <Link to="/machine" className="nav-button">Go</Link>
+                  </div>
+                </div>
+
+                {/* Start Guided Tutorial */}
+                <div className="dialog-wrapper">
+                  <img src={Hackcat} alt="Guide Avatar" className="guide-avatar" />
+                  <div className="speech-bubble glitch-bubble">
+                    <h2 className="bubble-title">{t('startTutorialLabel')}</h2>
+                    <p>{t('startTutorialDescription')}</p>
+                    <Link to="/tutorial/play" className="nav-button">Go</Link>
+                  </div>
+                </div>
+
+                {/* Learn Basics */}
+                <div className="dialog-wrapper">
+                  <img src={Hackcat} alt="Guide Avatar" className="guide-avatar" />
+                  <div className="speech-bubble glitch-bubble">
+                    <h2 className="bubble-title">{t('learnBasicsLabel')}</h2>
+                    <p>{t('learnBasicsDescription')}</p>
+                    <Link to="/learn" className="nav-button">Go</Link>
+                  </div>
+                </div>
+
               </div>
             )}
 
