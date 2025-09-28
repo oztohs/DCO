@@ -26,6 +26,14 @@ const ManualPage: React.FC = () => {
     { title: t('guideTitle'), rules: rules },
   ];
 
+  // 페이지2 대화 데이터 (4개의 말풍선)
+  const stepDialogs = [
+    { label: t('tutorialLabel'), desc: t('tutorialDescription'), to: "/tutorial" },
+    { label: t('playLabel'), desc: t('playDescription'), to: "/machine" },
+    { label: t('startTutorialLabel'), desc: t('startTutorialDescription'), to: "/tutorial/play" },
+    { label: t('learnBasicsLabel'), desc: t('learnBasicsDescription'), to: "/learn" },
+  ];
+
   const handleNextDialog = () => {
     if (currentPage === 1) {
       if (currentDialog < dialogs.length - 1) {
@@ -33,6 +41,10 @@ const ManualPage: React.FC = () => {
       } else {
         setCurrentPage(2);
         setCurrentDialog(0);
+      }
+    } else if (currentPage === 2) {
+      if (currentDialog < stepDialogs.length - 1) {
+        setCurrentDialog(currentDialog + 1);
       }
     }
   };
@@ -54,15 +66,15 @@ const ManualPage: React.FC = () => {
             </button>
           </div>
           
-          {/* --- 아무 화면 클릭 시 다음으로 --- */}
+          {/* --- 화면 클릭 시 다음 --- */}
           <div className="manual-content-area" onClick={handleNextDialog}>
             
             {/* --- 페이지 1 --- */}
             {currentPage === 1 && (
               <div className="page page-one active">
-                <div className="dialog-wrapper">
+                <div className="dialog-wrapper active">
                   <img src={Hackcat} alt="Guide Avatar" className="guide-avatar" />
-                  <div className="speech-bubble glitch-bubble">
+                  <div className="speech-bubble">
                     <h2 className="bubble-title">{currentDialogData.title}</h2>
                     {currentDialogData.message && <p>{currentDialogData.message}</p>}
                     {currentDialogData.rules && (
@@ -78,50 +90,23 @@ const ManualPage: React.FC = () => {
               </div>
             )}
 
-            {/* --- 페이지 2 (4개의 말풍선) --- */}
+            {/* --- 페이지 2 (말풍선 하나씩 클릭 시 나타나기) --- */}
             {currentPage === 2 && (
               <div className="page page-two active">
-                
-                {/* Tutorial */}
-                <div className="dialog-wrapper">
-                  <img src={Hackcat} alt="Guide Avatar" className="guide-avatar" />
-                  <div className="speech-bubble glitch-bubble">
-                    <h2 className="bubble-title">{t('tutorialLabel')}</h2>
-                    <p>{t('tutorialDescription')}</p>
-                    <Link to="/tutorial" className="nav-button">Go</Link>
+                {stepDialogs.map((step, idx) => (
+                  <div 
+                    key={idx} 
+                    className={`dialog-wrapper ${idx <= currentDialog ? "active" : ""}`}
+                  >
+                    <img src={Hackcat} alt="Guide Avatar" className="guide-avatar" />
+                    <div className="speech-bubble">
+                      <h2 className="bubble-title">{step.label}</h2>
+                      <p>{step.desc}</p>
+                      <Link to={step.to} className="nav-button">Go</Link>
+                    </div>
                   </div>
-                </div>
-
-                {/* Play Machines */}
-                <div className="dialog-wrapper">
-                  <img src={Hackcat} alt="Guide Avatar" className="guide-avatar" />
-                  <div className="speech-bubble glitch-bubble">
-                    <h2 className="bubble-title">{t('playLabel')}</h2>
-                    <p>{t('playDescription')}</p>
-                    <Link to="/machine" className="nav-button">Go</Link>
-                  </div>
-                </div>
-
-                {/* Start Guided Tutorial */}
-                <div className="dialog-wrapper">
-                  <img src={Hackcat} alt="Guide Avatar" className="guide-avatar" />
-                  <div className="speech-bubble glitch-bubble">
-                    <h2 className="bubble-title">{t('startTutorialLabel')}</h2>
-                    <p>{t('startTutorialDescription')}</p>
-                    <Link to="/tutorial/play" className="nav-button">Go</Link>
-                  </div>
-                </div>
-
-                {/* Learn Basics */}
-                <div className="dialog-wrapper">
-                  <img src={Hackcat} alt="Guide Avatar" className="guide-avatar" />
-                  <div className="speech-bubble glitch-bubble">
-                    <h2 className="bubble-title">{t('learnBasicsLabel')}</h2>
-                    <p>{t('learnBasicsDescription')}</p>
-                    <Link to="/learn" className="nav-button">Go</Link>
-                  </div>
-                </div>
-
+                ))}
+                <p className="cyber-footer-text">CLICK TO CONTINUE</p>
               </div>
             )}
 

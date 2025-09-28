@@ -7,10 +7,10 @@ import Main from '../../components/main/Main';
 import { User } from '../../types/User';
 import { CurrentUser } from '../../types/CurrentUser';
 import Loading from '../../components/public/Loading';
+import "../../assets/scss/leaderboard/LeaderboardTable.module.scss";
+import "../../"
 
-/**
- * Component representing the LeaderBoard Page.
- */
+
 const LeaderBoardPage: React.FC = () => {
   const [leaderboard, setLeaderboard] = useState<User[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -24,18 +24,12 @@ const LeaderBoardPage: React.FC = () => {
     myAvatar: null,
   });
 
-  /**
-   * Fetches the leaderboard data from the API.
-   */
+  // Leaderboard 불러오기
   useEffect(() => {
     const fetchLeaderboard = async () => {
       setLoading(true);
       try {
         const response = await getLeaderboard();
-        console.log('Leaderboard API Response:', response); // Debugging log
-
-        // Adjust based on actual response structure
-        // Example: If response.users is the array
         if (response && Array.isArray(response.users)) {
           setLeaderboard(response.users);
         } else if (response && Array.isArray(response.data)) {
@@ -44,7 +38,7 @@ const LeaderBoardPage: React.FC = () => {
           setLeaderboard(response);
         } else {
           console.error('Unexpected leaderboard data structure:', response);
-          setLeaderboard([]); // Fallback to empty array
+          setLeaderboard([]);
         }
       } catch (error: any) {
         console.error('Error fetching leaderboard:', error.message || error);
@@ -53,21 +47,14 @@ const LeaderBoardPage: React.FC = () => {
         setLoading(false);
       }
     };
-
-    fetchLeaderboard(); // Invoke the data fetching
+    fetchLeaderboard();
   }, []);
 
-  /**
-   * Fetches the current user's rank and information from the API.
-   */
+  // 내 랭크 불러오기
   useEffect(() => {
     const fetchMyRank = async () => {
       try {
         const response = await getMyRank();
-        console.log('My Rank API Response:', response); // Debugging log
-
-        // Adjust based on actual response structure
-        // Example:
         if (response && response.myRank !== undefined && response.user) {
           setCurrentUser({
             _id: response.user._id,
@@ -90,20 +77,29 @@ const LeaderBoardPage: React.FC = () => {
   }, []);
 
   if (loading) {
-    return <Main><Loading /></Main>;
+    return (
+      <Main>
+        <Loading />
+      </Main>
+    );
   }
 
   return (
     <Main title="LeaderBoard" description="LeaderBoard 화면입니다.">
-      <div className="leaderboard-page">
-        {loading && <p>Loading leaderboard...</p>}
-        {error && <p className="error">{error}</p>}
-        {!loading && !error && (
-          <LeaderboardTable 
-            leaderboard={leaderboard} 
-            currentUser={currentUser} 
-          />
-        )}
+      <div className="leaderboard-page cyberpunk-bg">
+        <div className="leaderboard-overlay" />
+        <div className="leaderboard-container">
+          <h1 className="leaderboard-title">🚀 CYBER LEADERBOARD 🚀</h1>
+
+          {error && <p className="error">{error}</p>}
+
+          {!loading && !error && (
+            <LeaderboardTable
+              leaderboard={leaderboard}
+              currentUser={currentUser}
+            />
+          )}
+        </div>
       </div>
     </Main>
   );
