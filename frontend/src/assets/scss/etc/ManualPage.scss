@@ -179,7 +179,7 @@ $color-bubble: #ffffff;
   margin-bottom: 20px;
   opacity: 0;
   transform: translateY(20px);
-  animation: dialogEnter 0.6s ease-out forwards;
+  animation: opacity 0.6s ease, transform 0.6s ease;
 
   &.active {
     opacity: 1;
@@ -196,12 +196,14 @@ $color-bubble: #ffffff;
 // --- 말풍선 ---
 .speech-bubble {
   position: relative;
-  background-color: rgba($color-bubble, 0.75);
-  color: $color-text-dark;
+  background-color: rgba(10, 20, 30, 0.75);
+  border: 1px solid rgb(0, 225, 255, 0.4);
   border-radius: 16px;
   padding: 20px 25px;
   width: 100%;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+  color: #cfd8dc;
+  font-family: 'VT323', monospace;
+  box-shadow: 0 0 12px rgba(0, 225, 255, 0.3);
 
   &::before {
     content: '';
@@ -211,7 +213,47 @@ $color-bubble: #ffffff;
     border-width: 12px;
     border-style: solid;
     border-color: transparent rgba(255, 255, 255, 0.75) transparent transparent;
+    filter: drop-shadow(0 0 4px rgba(0, 225, 255, 0.6));
   }
+
+  h2 {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+    color: #00e1ff;
+    text-shadow: 0 0 4px rgba(0, 225, 255, 0.7);
+  }
+
+  p, li {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #b0bec5;
+  }
+
+  li::before {
+    content: "▸";
+    margin-right: 8px;
+    color: #ff00c1; // 마젠타 포인트
+    text-shadow: 0 0 6px rgba(255, 0, 193, 0.7);
+  }
+
+// 클릭 안내 텍스트
+.cyber-footer-text {
+  font-family: 'VT323', monospace;
+  font-size: 1rem;
+  color: rgba(0, 225, 255, 0.7);
+  text-align: center;
+  margin-top: 15px;
+  animation: flicker 1.5s infinite;
+}
+
+@keyframes flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+    opacity: 1;
+  }
+  20%, 24%, 55% {
+    opacity: 0.3;
+  }
+}
 
   &::after {
     content: '';
@@ -223,9 +265,9 @@ $color-bubble: #ffffff;
     animation: glitch-bubble 2.5s infinite linear;
     pointer-events: none;
   }
-
-  p { font-size: 1.2rem; line-height: 1.7; }
 }
+  p { font-size: 1.2rem; line-height: 1.7; }
+
 
 .bubble-title {
   font-size: 2rem;
