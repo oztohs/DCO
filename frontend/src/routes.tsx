@@ -16,7 +16,7 @@ import { PlayProvider } from './contexts/PlayContext';
 const LoginPage = lazy(() => import('./pages/public/LoginPage'));
 const MainPage = lazy(() => import('./pages/public/MainPage'));
 const MyStats = lazy(() => import('./pages/user/MyStats'));
-const LeaderBoardPage = lazy(() => import('./pages/leaderboard/LeaderBoardPage'));
+const LeaderBoardPage = lazy(() => import('./pages/leaderboard/LeaderboardPage'));
 const ContestListPage = lazy(() => import('./pages/contest/ContestListPage'));
 const ContestDetailPage = lazy(() => import('./pages/contest/ContestDetailPage'));
 const ContestRegisterPage = lazy(() => import('./pages/contest/ContestRegisterPage'));
