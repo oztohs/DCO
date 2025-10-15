@@ -3,36 +3,39 @@ import styles from '../../assets/scss/etc/loading.module.scss';
 import fullscreenBlack from '../../assets/img/Fullscreen_black.png';
 import fullscreen from '../../assets/img/Fullscreen.png';
 
-const images = [
-  fullscreenBlack,
-  fullscreen,
-];
+const images = [fullscreenBlack, fullscreen];
 
 const Loading: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isPreGlitch, setIsPreGlitch] = useState(false);
+  const [fadeOut, setFadeOut] = useState(false);
 
   useEffect(() => {
+    // 주기적 글리치 전환
     const intervalId = setInterval(() => {
-      // Start pre-glitch effect
       setIsPreGlitch(true);
-      
-      // Start main transition after pre-glitch
+
+      // 빠른 글리치 후 메인 전환
       setTimeout(() => {
         setIsPreGlitch(false);
         setIsTransitioning(true);
-        
-        // Update image after transition starts
+
         setTimeout(() => {
           setCurrentImageIndex((prev) => (prev + 1) % images.length);
           setIsTransitioning(false);
         }, 500);
-      }, 350); // Pre-glitch duration
+      }, 350);
     }, 5000);
 
-    return () => clearInterval(intervalId);
+    // 4초 후 페이드아웃
+    const fadeTimer = setTimeout(() => setFadeOut(true), 4000);
+
+    return () => {
+      clearInterval(intervalId);
+      clearTimeout(fadeTimer);
+    };
   }, []);
 
   const currentImage = images[currentImageIndex];
@@ -41,15 +44,27 @@ const Loading: React.FC = () => {
   };
 
   return (
-    <div 
-      className={`${styles.glitch} ${isTransitioning ? styles.transitioning : ''} ${isPreGlitch ? styles.preGlitch : ''}`} 
-      ref={containerRef} 
+    <div
+      ref={containerRef}
       style={style}
+      className={`
+        ${styles.glitch}
+        ${isTransitioning ? styles.transitioning : ''}
+        ${isPreGlitch ? styles.preGlitch : ''}
+        ${fadeOut ? styles.fadeOut : ''}
+      `}
     >
-      <div className={`${styles.channel} ${styles.r} ${isTransitioning ? styles.active : ''}`}></div>
-      <div className={`${styles.channel} ${styles.g} ${isTransitioning ? styles.active : ''}`}></div>
-      <div className={`${styles.channel} ${styles.b} ${isTransitioning ? styles.active : ''}`}></div>
+      {/* RGB 채널 겹침 */}
+      <div className={`${styles.channel} ${styles.r}`}></div>
+      <div className={`${styles.channel} ${styles.g}`}></div>
+      <div className={`${styles.channel} ${styles.b}`}></div>
       <div className={styles.noise}></div>
+
+      {/* 중앙 텍스트 */}
+      <div className={styles.introText}>
+        <span className={styles.hack}>HACK</span>
+        <span className={styles.thisOut}>THIS OUT 2.0</span>
+      </div>
     </div>
   );
 };
