@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getLeaderboard, getMyRank } from '../../api/axiosUser';
+import { getLeaderboard } from '../../api/axiosUser';
 import LeaderboardTable from './LeaderboardTable';
 import Main from '../../components/main/Main';
 import { User } from '../../types/User';
@@ -7,20 +7,34 @@ import "../../assets/scss/leaderboard/LeaderboardPage.scss";
 import "../../assets/scss/leaderboard/LeaderboardTable.module.scss";
 import "../../assets/scss/leaderboard/ContestLeaderboard.module.scss";
 import "../../assets/scss/leaderboard/CurrentUserInfo.module.scss";
+import "../../assets/scss/leaderboard/HoloCard.scss"; 
 
-// 🔹 홀로그램 카드 이미지 import (이미지 경로에 맞게 수정)
-import holo1 from '../../assets/img/leaderboard/holo1.png';
-import holo2 from '../../assets/img/leaderboard/holo2.png';
-import holo3 from '../../assets/img/leaderboard/holo3.png';
+// 🔹 홀로그램 카드 컴포넌트
+const HoloCard: React.FC<{ rank: number; username: string; level: number; exp: number }> = ({
+  rank,
+  username,
+  level,
+  exp,
+}) => {
+  return (
+    <div className={`holo-card rank-${rank}`}>
+      <div className="holo-panel">
+        <div className="holo-beam"></div>
+        <div className="holo-ring"></div>
+        <div className="holo-particles"></div>
 
-// 표준 타입
-export type CurrentUserRow = {
-  rank: number;
-  username: string;
-  level: number;
-  exp: number;
+        <div className="holo-info">
+          <h2>{rank}위</h2>
+          <p>{username}</p>
+          <p>Lv. {level}</p>
+          <p>EXP {exp}</p>
+        </div>
+      </div>
+    </div>
+  );
 };
 
+// 🔹 리더보드 페이지 본체
 const LeaderBoardPage: React.FC = () => {
   const [leaderboard, setLeaderboard] = useState<User[]>([]);
   const [expanded, setExpanded] = useState(false);
@@ -29,57 +43,84 @@ const LeaderBoardPage: React.FC = () => {
     const fetchData = async () => {
       try {
         const leaderboardData = await getLeaderboard();
-
-        // ✅ 배열 형태로 정제
         const list = Array.isArray(leaderboardData)
           ? leaderboardData
           : leaderboardData?.data || [];
 
-        setLeaderboard(list);
+        if (!list || list.length === 0) {
+          setLeaderboard([
+            { username: "Alpha", level: 10, exp: 1200 },
+            { username: "Beta", level: 8, exp: 900 },
+            { username: "Gamma", level: 7, exp: 700 },
+          ] as User[]);
+        } else {
+          setLeaderboard(list);
+        }
       } catch (err) {
         console.error("리더보드 데이터를 불러오는 중 오류 발생:", err);
+        setLeaderboard([
+          { username: "Alpha", level: 10, exp: 1200 },
+          { username: "Beta", level: 8, exp: 900 },
+          { username: "Gamma", level: 7, exp: 700 },
+        ] as User[]);
       }
     };
-
     fetchData();
   }, []);
 
-  const topThree = Array.isArray(leaderboard) ? leaderboard.slice(0, 3) : [];
+  const topThree = leaderboard.slice(0, 3);
 
   return (
     <Main>
-      <div
-        className={`leaderboard-container ${expanded ? "expanded" : ""}`}
-        onClick={() => setExpanded(!expanded)}
-      >
+      <div className="leaderboard-container">
         {!expanded ? (
-          // ---------------- 첫 화면 (상위 3명 카드) ----------------
-          <div className="top-three">
-            {topThree.map((user, idx) => (
-              <div key={idx} className={`rank-card rank-${idx + 1}`}>
-                {/* 홀로그램 배경 */}
-                <img
-                  src={
-                    idx === 0 ? holo1 : idx === 1 ? holo2 : holo3
-                  }
-                  alt={`rank-${idx + 1}-background`}
-                  className="holo-bg"
-                />
-                {/* 정보 영역 */}
-                <div className="rank-info">
-                  <h2>{idx + 1}위</h2>
-                  <p>닉네임: {user.username}</p>
-                  <p>레벨: {user.level}</p>
-                  <p>EXP: {user.exp}</p>
-                </div>
+          <>
+            <h1 className="leaderboard-title"> TOP 3 RANKERS </h1>
+
+            {/* 🔹 카드 배열 구조 변경 */}
+            <div className="holo-layout">
+              <div className="holo-top">
+                {topThree[0] && (
+                  <HoloCard
+                    rank={1}
+                    username={topThree[0].username}
+                    level={topThree[0].level}
+                    exp={topThree[0].exp}
+                  />
+                )}
               </div>
-            ))}
-          </div>
+
+              <div className="holo-bottom">
+                {topThree[1] && (
+                  <HoloCard
+                    rank={2}
+                    username={topThree[1].username}
+                    level={topThree[1].level}
+                    exp={topThree[1].exp}
+                  />
+                )}
+                {topThree[2] && (
+                  <HoloCard
+                    rank={3}
+                    username={topThree[2].username}
+                    level={topThree[2].level}
+                    exp={topThree[2].exp}
+                  />
+                )}
+              </div>
+            </div>
+
+            <button className="toggle-btn" onClick={() => setExpanded(true)}>
+              전체 보기
+            </button>
+          </>
         ) : (
-          // ---------------- 두 번째 화면 (전체 리더보드) ----------------
           <div className="expanded-view">
             <h1 className="leaderboard-title">전체 리더보드</h1>
             <LeaderboardTable leaderboard={leaderboard} />
+            <button className="toggle-btn" onClick={() => setExpanded(false)}>
+              TOP 3 보기
+            </button>
           </div>
         )}
       </div>
