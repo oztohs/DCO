@@ -442,9 +442,19 @@ $glitch-intensity: 25;
   background-repeat: no-repeat;
   background-size: contain;
   overflow: hidden;
-  transition: opacity 1s ease-in-out;
-}
+  transition: background-image 0.15s ease-in-out; /* 🔹 부드러운 전환 추가 */
+  animation: flicker-bg 2.5s infinite ease-in-out;
+  filter: brightness(1) contrast(1.1) saturate(1.1);
 
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: transparent !important;
+  }
+}
 /* === 페이드아웃 (로딩 종료 시) === */
 .fadeOut {
   animation: fadeOutAnim 1.5s ease-in forwards;
@@ -471,18 +481,6 @@ $glitch-intensity: 25;
   pointer-events: none;
 }
 
-.hack {
-  display: block;
-  font-size: clamp(2.2rem, 5vw, 4rem);
-  letter-spacing: 8px;
-}
-
-.thisOut {
-  display: block;
-  font-size: clamp(1.2rem, 3vw, 2.4rem);
-  letter-spacing: 6px;
-  margin-top: 0.3em;
-}
 
 /* === 텍스트 CRT Flicker === */
 @keyframes flickerText {
