@@ -1,66 +1,115 @@
-import React, { useEffect, useRef, useState } from 'react';
-import styles from '../../assets/scss/etc/loading.module.scss';
-import hackText from '../../assets/img/Fullscreen_black.png';
-import hackLogo from '../../assets/img/Fullscreen_nobg.png';
-import hackFull from '../../assets/img/Fullscreen.png';
-import screen1 from '../../assets/img/screennoise.png';
-import screen2 from '../../assets/img/screennoise1.png';
-import screen3 from '../../assets/img/screennoise2.png';
-import screen4 from '../../assets/img/screennoise3.png';
-import screen5 from '../../assets/img/screennoise4.png';
+import React, { useEffect, useState } from "react";
 
-const images = [
-  hackText, screen1, screen2,
-  hackLogo, screen3, screen4,
-  hackFull, screen5
-];
+import img1 from "../../assets/img/Fullscreen_black.png";
+import img2 from "../../assets/img/screennoise.png";
+import img3 from "../../assets/img/Fullscreen.png";
+import img4 from "../../assets/img/screennoise1.png";
+import img5 from "../../assets/img/screennoise2.png";
+import img6 from "../../assets/img/screennoise3.png";
+import img7 from "../../assets/img/screennoise4.png";
+
+const images = [img1, img2, img3, img4, img5, img6, img7];
 
 const Loading: React.FC = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [fadeOut, setFadeOut] = useState(false);
+  const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    // === 글리치 효과 전환 ===
-    const intervalId = setInterval(() => {
-      setCurrentImageIndex((prev) => (prev + 1) % images.length);
-    }, 450); // 약 0.45초 간격 (지직지직 느낌)
-
-    // === 페이드아웃 타이밍 ===
-    const fadeTimer = setTimeout(() => setFadeOut(true), 8000);
-
-    return () => {
-      clearInterval(intervalId);
-      clearTimeout(fadeTimer);
-    };
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % images.length);
+    }, 400);
+    return () => clearInterval(interval);
   }, []);
 
-  const currentImage = images[currentImageIndex];
-  const style = {
-    backgroundImage: `url(${currentImage})`,
-    backgroundSize: 'contain',
-    backgroundRepeat: 'no-repeat',
-    backgroundPosition: 'center',
-  };
+  const current = images[index];
+  const isNoise = index >= 2; // img3 ~ img7 구간만 노이즈 계열
 
   return (
     <div
-      ref={containerRef}
-      style={style}
-      className={`
-        ${styles.glitch}
-        ${fadeOut ? styles.fadeOut : ''}
-      `}
+      style={{
+        width: "100vw",
+        height: "100vh",
+        backgroundColor: "#000",
+        overflow: "hidden",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        position: "relative",
+      }}
     >
-      <div className={styles.channel + ' ' + styles.r}></div>
-      <div className={styles.channel + ' ' + styles.g}></div>
-      <div className={styles.channel + ' ' + styles.b}></div>
-      <div className={styles.noise}></div>
+      {/* ✅ 이미지 표시 */}
+      <img
+        src={current}
+        alt={`frame-${index}`}
+        draggable="false"
+        style={{
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+          objectFit: "contain",
+          opacity: 1,
+          // ✅ 노이즈 이미지면 강제 색상/밝기 부스트
+          filter: isNoise
+            ? "brightness(3) contrast(2.5) saturate(2.5) hue-rotate(30deg)"
+            : "brightness(1) contrast(1)",
+          mixBlendMode: "normal",
+          zIndex: 1,
+          transition: "filter 0.1s linear, transform 0.1s linear",
+          transform: `scale(${1 + Math.random() * 0.02})`,
+        }}
+      />
+
+      {/* ✅ 노이즈일 때는 컬러 오버레이 추가 */}
+      {isNoise && (
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background:
+              "repeating-linear-gradient(0deg, rgba(0,255,255,0.1) 0px, rgba(255,0,193,0.15) 2px, transparent 4px)",
+            mixBlendMode: "screen",
+            opacity: 0.6,
+            zIndex: 1.5,
+            pointerEvents: "none",
+          }}
+        ></div>
+      )}
 
       {/* 중앙 텍스트 */}
-      <div className={styles.introText}>
-        <span className={styles.hack}>HACK</span>
-        <span className={styles.thisOut}>THIS OUT 2.0</span>
+      <div
+        style={{
+          position: "absolute",
+          bottom: "8%",
+          textAlign: "center",
+          width: "100%",
+          color: "#00eaff",
+          fontFamily: "'Orbitron', 'Press Start 2P', sans-serif",
+          fontSize: "2rem",
+          fontWeight: 700,
+          textShadow:
+            "0 0 8px #00ffff, 0 0 16px #00ffff, 0 0 24px #ff00c1, 0 0 40px rgba(0,255,255,0.4)",
+          zIndex: 3,
+          letterSpacing: "2px",
+          userSelect: "none",
+          pointerEvents: "none",
+        }}
+      >
+        <span style={{ color: "#00ffff", marginRight: "8px" }}>HACK</span>
+        <span style={{ color: "#ff00c1" }}>THIS OUT 2.0</span>
+      </div>
+
+      {/* 인덱스 표시 (디버그용) */}
+      <div
+        style={{
+          position: "absolute",
+          top: "10px",
+          right: "20px",
+          color: "#fff",
+          fontFamily: "monospace",
+          fontSize: "14px",
+          zIndex: 5,
+        }}
+      >
+        frame: {index + 1} / {images.length}
       </div>
     </div>
   );
