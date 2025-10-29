@@ -78,44 +78,20 @@ const ShopPage: React.FC = () => {
       toast.error("상점 데이터를 불러오지 못했습니다.");
       setItems(dummyItems);
       setBalance(0);
-=======
-import React, { useEffect, useState } from 'react';
-import { getShopItems, buyShopItem } from '../../api/axiosShop';
-import { ShopItem } from '../../types/ShopItem';
-import ShopItemCard from '../../components/Shop/ShopItemCard';
-import '../../assets/scss/Shop/ShopPage.scss';
-import Main from '../../components/main/Main';
-import { toast } from 'react-toastify';
-
-const ShopPage: React.FC = () => {
-  const [items, setItems] = useState<ShopItem[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-
-  // 아이템 불러오기
-  const fetchItems = async () => {
-    try {
-      const data = await getShopItems(); // ✅ ShopItem[] 직접 반환
-      setItems(data);
-    } catch (err) {
-      toast.error('상점 아이템 불러오기 실패');
->>>>>>> 8a2f305e38722205d8e16bbbe85f4a4da737d06d
     } finally {
       setLoading(false);
+      setInvLoading(false);
     }
   };
 
-<<<<<<< HEAD
   useEffect(() => {
     fetchAll();
   }, []);
 
   // === 아이템 구매 ===
-=======
-  // 아이템 구매 처리
->>>>>>> 8a2f305e38722205d8e16bbbe85f4a4da737d06d
   const handleBuyItem = async (itemId: string) => {
+    if (buyingId) return;
     try {
-<<<<<<< HEAD
       setBuyingId(itemId);
       const msg = await buyShopItem(itemId);
       toast.success(msg || "아이템 구매 성공!");
@@ -436,32 +412,6 @@ const ShopPage: React.FC = () => {
             </div>
           </div>
         )}
-=======
-      await buyShopItem(itemId);
-      toast.success('아이템 구매 성공!');
-    } catch (err: any) {
-      toast.error(err?.response?.data?.msg || '구매 실패');
-    }
-  };
-
-  useEffect(() => {
-    fetchItems();
-  }, []);
-
-  return (
-    <Main title="상점" description="토큰을 사용하여 아이템을 구매하세요.">
-      <div className="shop-page">
-        <h1 className="shop-title">🎁 상점</h1>
-        {loading ? (
-          <p>아이템을 불러오는 중...</p>
-        ) : (
-          <div className="shop-grid">
-            {items.map((item) => (
-              <ShopItemCard key={item._id} item={item} onBuy={handleBuyItem} />
-            ))}
-          </div>
-        )}
->>>>>>> 8a2f305e38722205d8e16bbbe85f4a4da737d06d
       </div>
     </Main>
   );
