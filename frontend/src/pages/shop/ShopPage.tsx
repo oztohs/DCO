@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // src/pages/ShopPage.tsx
 import React, { useEffect, useState } from "react";
 import { getShopItems, buyShopItem, getInventory } from "../../api/axiosShop";
