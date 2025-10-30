@@ -1,30 +1,46 @@
 import React, { useEffect, useState } from "react";
 import styles from "../../assets/scss/etc/loading.module.scss";
+import fullscreenBlack from "../../assets/img/Fullscreen_black.png";
+import fullscreen from "../../assets/img/Fullscreen.png";
+import screennoise from "../../assets/img/screennoise.png";
+import screennoise1 from "../../assets/img/screennoise_L.png";
+import screennoise2 from "../../assets/img/screennoise2.png";
+import screennoise3 from "../../assets/img/screennoise3.png";
+import screennoise4 from "../../assets/img/screennoise4.png";
 
-import img1 from "../../assets/img/Fullscreen_black.png";
-import img2 from "../../assets/img/Fullscreen.png";
-import img3 from "../../assets/img/screennoise.png";
-import img4 from "../../assets/img/screennoise1.png";
-import img5 from "../../assets/img/screennoise2.png";
-import img6 from "../../assets/img/screennoise3.png";
-import img7 from "../../assets/img/screennoise4.png";
-
-const images = [img1, img2, img3, img4, img5, img6, img7];
+const baseImages = [fullscreenBlack, fullscreen];
+const noiseFrames = [screennoise, screennoise1, screennoise2, screennoise3, screennoise4];
 
 const Loading: React.FC = () => {
-  const [index, setIndex] = useState(0);
+  const [baseIndex, setBaseIndex] = useState(0);
+  const [noiseIndex, setNoiseIndex] = useState(0);
 
+  // ✅ 배경 전환
   useEffect(() => {
-    const interval = setInterval(() => {
-      setIndex((prev) => (prev + 1) % images.length);
-    }, 120); // 프레임 전환 속도 (0.12초 간격)
-    return () => clearInterval(interval);
+    const baseTimer = setInterval(() => {
+      setBaseIndex((prev) => (prev + 1) % baseImages.length);
+    }, 5000);
+    return () => clearInterval(baseTimer);
+  }, []);
+
+  // ✅ 노이즈 순환
+  useEffect(() => {
+    const noiseTimer = setInterval(() => {
+      setNoiseIndex((prev) => (prev + 1) % noiseFrames.length);
+    }, 120);
+    return () => clearInterval(noiseTimer);
   }, []);
 
   return (
     <div className={styles.loadingContainer}>
-      <img src={images[index]} alt="glitch" className={styles.bgImage} />
-      <div className={styles.glitchText}>
+      {/* --- 배경 --- */}
+      <img src={baseImages[baseIndex]} alt="base" className={styles.baseImage} />
+
+      {/* --- 노이즈 오버레이 --- */}
+      <img src={noiseFrames[noiseIndex]} alt="noise" className={styles.noiseOverlay} />
+
+      {/* --- 텍스트 --- */}
+      <div className={styles.textOverlay}>
         <h1>HACK</h1>
         <p>THIS OUT 2.0</p>
       </div>
