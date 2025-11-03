@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import styles from "../../assets/scss/etc/loading.module.scss";
+
 import fullscreenBlack from "../../assets/img/Fullscreen_black.png";
 import fullscreen from "../../assets/img/Fullscreen.png";
 import screennoise from "../../assets/img/screennoise.png";
@@ -8,40 +9,81 @@ import screennoise2 from "../../assets/img/screennoise2.png";
 import screennoise3 from "../../assets/img/screennoise3.png";
 import screennoise4 from "../../assets/img/screennoise4.png";
 
-const baseImages = [fullscreenBlack, fullscreen];
-const noiseFrames = [screennoise, screennoise1, screennoise2, screennoise3, screennoise4];
+/**
+ * Cyberpunk-style "glitchy" fast flickering loading background
+ * - 랜덤 속도 + 프레임 흔들림 효과
+ */
+const Loading: React.FC<{ className?: string }> = ({ className }) => {
+  const frames = useMemo(
+    () => [
+      fullscreenBlack,
+      fullscreen,
+      screennoise,
+      screennoise1,
+      screennoise2,
+      screennoise3,
+      screennoise4,
+    ],
+    []
+  );
 
-const Loading: React.FC = () => {
-  const [baseIndex, setBaseIndex] = useState(0);
-  const [noiseIndex, setNoiseIndex] = useState(0);
+  const [idx, setIdx] = useState(0);
+  const runningRef = useRef<boolean>(!document.hidden);
+  const aliveRef = useRef<boolean>(false);
+  const timeoutRef = useRef<number | null>(null);
 
-  // ✅ 배경 전환
   useEffect(() => {
-    const baseTimer = setInterval(() => {
-      setBaseIndex((prev) => (prev + 1) % baseImages.length);
-      console.log(baseImages.length)
-    }, 5000);
-    return () => clearInterval(baseTimer);
-  }, []);
+    frames.forEach((src) => {
+      const img = new Image();
+      img.src = src as string;
+    });
+  }, [frames]);
 
-  // ✅ 노이즈 순환
+  const schedule = () => {
+    if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
+    if (!aliveRef.current || !runningRef.current) return;
+
+    // 🔹 랜덤 간격 (지직거림 효과용)
+    // 60~180ms 사이에서 랜덤, 가끔 30ms로 빠르게 튐
+    const randomInterval = Math.random() < 0.15 ? 30 : Math.random() * 120 + 60;
+
+    timeoutRef.current = window.setTimeout(() => {
+      // 🔹 약간의 랜덤 인덱스 점프
+      const jump = Math.random() < 0.1 ? 2 : 1;
+      setIdx((prev) => (prev + jump) % frames.length);
+      schedule();
+    }, randomInterval);
+  };
+
   useEffect(() => {
-    const noiseTimer = setInterval(() => {
-      setNoiseIndex((prev) => (prev + 1) % noiseFrames.length);
-      console.log(noiseFrames.length);
-    }, 120);
-    return () => clearInterval(noiseTimer);
-  }, []);
+    aliveRef.current = true;
+    schedule();
+    return () => {
+      aliveRef.current = false;
+      if (timeoutRef.current) {
+        window.clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+    };
+  }, [frames.length]);
 
   return (
-    <div className={styles.loadingContainer}>
-      {/* --- 배경 --- */}
-      <img src={baseImages[baseIndex]} alt="base" className={styles.baseImage} />
+    <div className={className ?? styles.loadingContainer}>
+      <img
+        key={idx}
+        src={frames[idx]}
+        alt={`loading-frame-${idx}`}
+        className={styles.baseImage}
+        style={{
+          transform: `translate(${Math.random() * 3 - 1.5}px, ${
+            Math.random() * 3 - 1.5
+          }px)`, // 🔹 살짝 흔들림
+          filter: `brightness(${0.9 + Math.random() * 0.4}) contrast(${
+            1.1 + Math.random() * 0.4
+          })`, // 🔹 밝기/대비 지직 효과
+        }}
+      />
 
-      {/* --- 노이즈 오버레이 --- */}
-      <img src={noiseFrames[noiseIndex]} alt="noise" className={styles.noiseOverlay} />
-
-      {/* --- 텍스트 --- */}
       <div className={styles.textOverlay}>
         <h1>HACK</h1>
         <p>THIS OUT 2.0</p>

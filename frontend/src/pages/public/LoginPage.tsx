@@ -71,19 +71,17 @@ const LoginPage: React.FC = () => {
     );
   }
 
+  // 🔹 여기부터 수정된 부분 (74번 줄 이후)
   return (
     <div>
       <div
         ref={containerRef}
-        className={`background-image ${isClicked ? 'change-background' : ''} ${isTransitioning ? 'transitioning' : ''} ${isPreGlitch ? 'pre-glitch' : ''}`}
+        className={`background-image ${1 ? 'change-background' : ''} ${1 ? 'transitioning' : ''} ${1 ? 'pre-glitch' : ''}`}
         onClick={handleBackgroundClick}
       >
-        <div className="channel r"></div>
-        <div className="channel g"></div>
-        <div className="channel b"></div>
-        <div className="noise"></div>
+        <Loading />
       </div>
-      <div className={isClicked ? "content-wrapper visible" : "content-wrapper"}>
+      <div className={1 ? "content-wrapper visible" : "content-wrapper"}>
         <LoginForm openRegisterModal={openModal} /> {/* Pass the modal opening function to LoginForm */}
       </div>
 
