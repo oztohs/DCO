@@ -22,7 +22,6 @@
   margin-bottom: 16px;
   position: relative;
 
-  /* --- 은은한 스캔라인 효과 --- */
   &::before {
     content: "";
     position: absolute;
@@ -88,9 +87,6 @@
   position: relative;
   z-index: 2;
 
-  /* ===============================
-     ARTICLE BOX
-  =============================== */
   article {
     position: relative;
     max-width: 1200px;
@@ -104,69 +100,22 @@
     overflow: hidden;
     z-index: 1;
     isolation: isolate;
-
-    /* --- 은은한 블루 Glow --- */
+    opacity: 0;
+    transform: scale(0.95);
+    transition: all 0.5s ease;
+    pointer-events: none;
     box-shadow:
       0 0 15px rgba(46, 142, 167, 0.15),
       inset 0 0 20px rgba(94, 200, 216, 0.08);
-    transition: all 0.4s ease;
 
-    &:hover {
-      box-shadow:
-        0 0 25px rgba(94, 200, 216, 0.25),
-        inset 0 0 25px rgba(174, 243, 255, 0.1);
+    &.visible {
+      opacity: 1;
+      transform: scale(1);
+      animation: glitch-fade-in 1s steps(2, end) both;
+      pointer-events: auto;
     }
 
-    /* --- 움직이는 블루 테두리 --- */
-    &::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: 16px;
-      padding: 2px;
-      background: linear-gradient(
-        120deg,
-        var(--cyber-dark),
-        var(--cyber-blue),
-        var(--cyber-light),
-        var(--cyber-glow)
-      );
-      background-size: 300% 300%;
-      animation: neon-border-flow 10s linear infinite;
-      mask:
-        linear-gradient(#fff 0 0) content-box,
-        linear-gradient(#fff 0 0);
-      mask-composite: exclude;
-      -webkit-mask:
-        linear-gradient(#fff 0 0) content-box,
-        linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.7;
-    }
-
-    /* --- subtle glitch noise overlay --- */
-    &::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: 16px;
-      background: repeating-linear-gradient(
-        90deg,
-        rgba(94, 200, 216, 0.02) 0px,
-        rgba(94, 200, 216, 0.02) 1px,
-        transparent 2px,
-        transparent 4px
-      );
-      mix-blend-mode: lighten;
-      animation: glitch-noise 3s infinite steps(2);
-      opacity: 0.1;
-    }
-
-    /* === TEXT === */
     h2 {
-      position: relative;
       margin-bottom: 16px;
       padding-left: 24px;
       border-left: 4px solid var(--cyber-light);
@@ -180,56 +129,24 @@
         0 0 10px rgba(174, 243, 255, 0.4);
       animation: title-flicker 7s infinite linear;
       letter-spacing: 2px;
-      z-index: 2;
     }
 
     strong {
-      font-weight: 700;
-      font-size: clamp(26px, 2vw, 30px);
       color: var(--cyber-glow);
-      text-shadow:
-        0 0 4px var(--cyber-light),
-        0 0 8px rgba(174, 243, 255, 0.3);
-      transition: all 0.3s ease;
-
-      &:hover {
-        color: var(--cyber-light);
-        text-shadow:
-          0 0 10px var(--cyber-light),
-          0 0 16px rgba(174, 243, 255, 0.5);
-      }
+      font-weight: 700;
     }
 
     p,
     ol {
-      margin: 0;
-      padding: 0;
       color: #d6e9ef;
-      text-shadow:
-        0 0 2px rgba(94, 200, 216, 0.2),
-        0 0 4px rgba(174, 243, 255, 0.1);
-      z-index: 2;
-      position: relative;
-      font-family: "Rajdhani", sans-serif;
     }
 
     a {
-      font-weight: 700;
-      font-size: 1.1em;
       color: var(--cyber-light);
-      font-family: "Share Tech Mono", monospace;
       text-decoration: none;
-      text-shadow:
-        0 0 6px var(--cyber-light),
-        0 0 10px var(--cyber-glow);
-      transition: all 0.3s ease;
-      position: relative;
 
       &:hover {
         color: var(--cyber-glow);
-        text-shadow:
-          0 0 10px var(--cyber-light),
-          0 0 14px var(--cyber-glow);
       }
     }
   }
@@ -265,6 +182,51 @@
 /* ===============================
    ANIMATIONS
 =============================== */
+@keyframes glitch-fade-in {
+  0% {
+    opacity: 0;
+    filter: brightness(0.4) contrast(1.2);
+    transform: scale(0.9) translateX(0);
+  }
+  10% {
+    opacity: 1;
+    transform: scale(1.03) translateX(-4px);
+    filter: brightness(2) contrast(1.5);
+  }
+  20% {
+    transform: scale(0.98) translateX(4px);
+  }
+  30% {
+    transform: scale(1.03) translateY(-2px);
+  }
+  50% {
+    clip-path: inset(10% 0 40% 0);
+    opacity: 0.7;
+  }
+  60% {
+    clip-path: inset(80% 0 5% 0);
+    opacity: 1;
+  }
+  70% {
+    clip-path: inset(30% 0 30% 0);
+  }
+  100% {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+    filter: none;
+    transform: none;
+  }
+}
+
+@keyframes glitch-shift {
+  0% { clip-path: inset(10% 0 80% 0); }
+  20% { clip-path: inset(85% 0 5% 0); }
+  40% { clip-path: inset(40% 0 50% 0); }
+  60% { clip-path: inset(70% 0 10% 0); }
+  80% { clip-path: inset(25% 0 60% 0); }
+  100% { clip-path: inset(0 0 0 0); }
+}
+
 @keyframes neon-border-flow {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
@@ -306,5 +268,62 @@
     text-shadow:
       0 0 10px var(--cyber-blue),
       0 0 16px var(--cyber-light);
+  }
+}
+
+/* =====================================
+   🔥 GLOBAL GLITCH TEXT EFFECT (CRT 느낌)
+===================================== */
+.tutorial-page-content-container article {
+  color: #dffcff;
+  text-shadow:
+    0 0 2px #00e1ff,
+    0 0 4px #00e1ff,
+    0 0 8px rgba(0, 246, 255, 0.5),
+    0 0 12px rgba(255, 0, 193, 0.3);
+  animation: subtle-glitch-text 3s infinite ease-in-out alternate;
+}
+
+.tutorial-page-content-container article a,
+.tutorial-page-content-container article strong {
+  color: #b9f8ff;
+  text-shadow:
+    0 0 2px #00e1ff,
+    0 0 6px #00f6ff,
+    0 0 10px rgba(255, 0, 193, 0.3);
+}
+
+/* 살짝 움직이며 RGB 번짐 */
+@keyframes subtle-glitch-text {
+  0% {
+    text-shadow:
+      0 0 1px #00f6ff,
+      1px 0 2px #ff00c1,
+      -1px 0 2px #00e1ff,
+      0 0 8px rgba(0, 255, 255, 0.3);
+  }
+  25% {
+    text-shadow:
+      -1px 0 2px #ff00c1,
+      1px 0 3px #00e1ff,
+      0 0 10px rgba(255, 0, 193, 0.4);
+  }
+  50% {
+    text-shadow:
+      1px 1px 2px #ff00c1, 
+      -1px -1px 2px #00e1ff,
+      0 0 12px rgba(0, 255, 255, 0.3);
+  }
+  75% {
+    text-shadow:
+      2px -1px 2px #00e1ff,
+      -2px 1px 2px #ff00c1,
+      0 0 10px rgba(0, 246, 255, 0.3);
+  }
+  100% {
+    text-shadow:
+      0 0 2px #00e1ff,
+      0 0 4px #00e1ff,
+      0 0 8px rgba(0, 246, 255, 0.4);
   }
 }

@@ -102,20 +102,18 @@
 	}
 }
 
-/* ✅ 기존 .change-background 블록 대신 새로운 버전으로 교체 */
 .change-background {
 	width: 70%;
-	background-color: black;
-	background-image: url('') !important;
-   
+	background-image: url('../../img/Fullscreen_black.png') !important;
+	
 	@media screen and (max-width: 1200px) {
 		width: 65%;
 	}
-   
+	
 	@media screen and (max-width: 768px) {
 		width: 60%;
 	}
-   
+	
 	@media screen and (max-width: 480px) {
 		width: 0%;
 	}
@@ -163,4 +161,5 @@
 
 :global(#root) {
 	overflow: hidden;
-}
+  }
+  
