@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import Main from '../components/main/Main';
 import logo_dark from "../assets/img/icon/HTO DARK.jpg";
@@ -14,20 +14,41 @@ const TutorialPage: React.FC = () => {
 
   const gamingRulesList: string[] = t('gamingRules.list', { returnObjects: true }) as string[];
 
+  // ⚡ 클릭 시 article이 하나씩 지지직 등장 (data-glitch 제거)
+  useEffect(() => {
+    const articles = Array.from(document.querySelectorAll('.tutorial-page-content-container article'));
+    let currentIndex = 0;
+
+    const handleClick = () => {
+      if (currentIndex < articles.length) {
+        const target = articles[currentIndex];
+        setTimeout(() => {
+          target.classList.add('visible');
+        }, 120);
+        currentIndex++;
+      }
+    };
+
+    window.addEventListener('click', handleClick);
+    return () => window.removeEventListener('click', handleClick);
+  }, []);
+
   return (
     <Main>
       <div className="tutorial-page-container">
         <div className="tutorial-page-top">
-          <img 
-            id="tutorialImg" 
-            className="tutorial-page-img-dark" 
-            alt="" 
+          <img
+            id="tutorialImg"
+            className="tutorial-page-img-dark"
+            alt=""
             src={i18n.language === 'en' ? logo_dark : logo_light}
             onClick={() => handleChangeLanguage(i18n.language === 'en' ? 'ko' : 'en')}
             style={{ cursor: 'pointer' }}
           />
         </div>
+
         <section className="tutorial-page-content-container">
+          {/* === Introduction === */}
           <article className="tutorial-page-content-intro">
             <h2>{t('introduction.title')}</h2>
             <Trans
@@ -43,6 +64,8 @@ const TutorialPage: React.FC = () => {
               ]}
             />
           </article>
+
+          {/* === Gaming Rules === */}
           <article className="tutorial-page-content-rules">
             <h2>{t('gamingRules.title')}</h2>
             <ol>
@@ -52,13 +75,15 @@ const TutorialPage: React.FC = () => {
                     i18nKey={`gamingRules.list.${index}`}
                     components={[
                       <a href="#" key={0}></a>,
-                      <a href="#" key={1}></a>
+                      <a href="#" key={1}></a>,
                     ]}
                   />
                 </li>
               ))}
             </ol>
           </article>
+
+          {/* === Game Modes === */}
           <article className="tutorial-page-content-gamemode">
             <h2>{t('gameModes.title')}</h2>
             <Trans
@@ -81,14 +106,18 @@ const TutorialPage: React.FC = () => {
             />
           </article>
 
+          {/* === Video Section === */}
           <article className="tutorial-page-content-add">
             <div className="tutorial-video-container">
               <h3>{t('additionalGameModes.video.title')}</h3>
-              <iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?si=kgEJ4ZhlcCpcSSF6&amp;list=PLUK26CwhrfoZVjnUkSWtrds8nvh4VUY59" 
-                title="YouTube video player" 
-                frameBorder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                referrerPolicy="strict-origin-when-cross-origin" 
+              <iframe
+                width="560"
+                height="315"
+                src="https://www.youtube.com/embed/videoseries?si=kgEJ4ZhlcCpcSSF6&amp;list=PLUK26CwhrfoZVjnUkSWtrds8nvh4VUY59"
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
                 allowFullScreen
               ></iframe>
             </div>

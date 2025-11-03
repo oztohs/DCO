@@ -19,6 +19,7 @@ const Loading: React.FC = () => {
   useEffect(() => {
     const baseTimer = setInterval(() => {
       setBaseIndex((prev) => (prev + 1) % baseImages.length);
+      console.log(baseImages.length)
     }, 5000);
     return () => clearInterval(baseTimer);
   }, []);
@@ -27,6 +28,7 @@ const Loading: React.FC = () => {
   useEffect(() => {
     const noiseTimer = setInterval(() => {
       setNoiseIndex((prev) => (prev + 1) % noiseFrames.length);
+      console.log(noiseFrames.length);
     }, 120);
     return () => clearInterval(noiseTimer);
   }, []);
