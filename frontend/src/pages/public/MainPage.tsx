@@ -1,99 +1,98 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styles from '../../assets/scss/etc/MainPage.module.scss';
+
 import fullscreenBlack from '../../assets/img/Fullscreen_black.png';
 import fullscreen from '../../assets/img/Fullscreen.png';
+import screennoise from "../../assets/img/screennoise.png";
+import screennoise1 from "../../assets/img/screennoise_1.png";
+import screennoise2 from "../../assets/img/screennoise2.png";
+import screennoise3 from "../../assets/img/screennoise3.png";
+import screennoise4 from "../../assets/img/screennoise4.png";
 
-const images = [
-  fullscreenBlack,
-  fullscreen,
-];
+interface MainPageProps {
+  intervalMs?: number;   // 프레임 전환 간격(ms)
+  className?: string;    // 외부 스타일 오버라이드
+}
 
-const MainPage: React.FC = () => {
-  const location = useLocation();
+const MainPage: React.FC<MainPageProps> = ({
+  intervalMs = 120,
+  className = '',
+}) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const containerRef = useRef<HTMLDivElement>(null);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [isPreGlitch, setIsPreGlitch] = useState(false);
+
+  const images = [
+    fullscreenBlack,
+    fullscreen,
+    screennoise,
+    screennoise1,
+    screennoise2,
+    screennoise3,
+    screennoise4,
+  ];
+
+  const [currentImage, setCurrentImage] = useState(images[0]);
   const [isFadingOut, setIsFadingOut] = useState(false);
+  const [glitchIntensity, setGlitchIntensity] = useState(0);
 
   const handleTransition = () => {
     setIsFadingOut(true);
     setTimeout(() => {
       navigate('/manual');
-    }, 500);
+    }, 400);
   };
 
+  // 클릭 또는 키 입력 시 다음 화면으로
   useEffect(() => {
-    // Add keyboard event listener
-    const handleKeyPress = () => {
-      handleTransition();
-    };
-
+    const handleKeyPress = () => handleTransition();
     window.addEventListener('keydown', handleKeyPress);
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyPress);
-    };
+    return () => window.removeEventListener('keydown', handleKeyPress);
   }, []);
 
+  // 🎞️ 빠른 노이즈 프레임 루프 (랜덤 섞기)
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      setIsPreGlitch(true);
-      
-      setTimeout(() => {
-        setIsPreGlitch(false);
-        setIsTransitioning(true);
-        
-        setTimeout(() => {
-          setCurrentImageIndex((prev) => (prev + 1) % images.length);
-          setIsTransitioning(false);
-        }, 500);
-      }, 350);
-    }, 5000);
+    const frameTimer = setInterval(() => {
+      const randomImage = images[Math.floor(Math.random() * images.length)];
+      setCurrentImage(randomImage);
+      setGlitchIntensity(Math.random() * 0.7 + 0.3); // 랜덤 강도 (0.3~1.0)
+    }, intervalMs);
+    return () => clearInterval(frameTimer);
+  }, [intervalMs]);
 
-    return () => clearInterval(intervalId);
-  }, []);
-
+  // 로그인에서 진입 시 자동 전환
   useEffect(() => {
-    // If we're coming from login, automatically trigger transition after a delay
     if (location.state?.fromLogin) {
-      // Wait for 6 seconds (1 full image transition cycle + extra time to see effects)
-      setTimeout(() => {
-        handleTransition();
-      }, 6000);
+      setTimeout(() => handleTransition(), 5000);
     }
-  }, []);
+  }, [location.state]);
 
-  const handleClick = () => {
-    setIsFadingOut(true);
-    setTimeout(() => {
-      navigate('/manual');
-    }, 500);
-  };
+  const handleClick = () => handleTransition();
 
-  const currentImage = images[currentImageIndex];
   const style = {
     backgroundImage: `url(${currentImage})`,
+    filter: `contrast(${1 + glitchIntensity * 0.3}) brightness(${1 + glitchIntensity * 0.2})`,
   };
 
   return (
-    <div 
-      className={`
-        ${styles.glitch} 
-        ${isTransitioning ? styles.transitioning : ''} 
-        ${isPreGlitch ? styles.preGlitch : ''} 
-        ${isFadingOut ? styles.fadeOut : ''}
-      `} 
-      ref={containerRef} 
+    <div
+      ref={containerRef}
       style={style}
       onClick={handleClick}
+      className={`
+        ${styles.glitch}
+        ${className}
+        ${isFadingOut ? styles.fadeOut : ''}
+      `}
     >
-      <div className={`${styles.channel} ${styles.r} ${isTransitioning ? styles.active : ''}`}></div>
-      <div className={`${styles.channel} ${styles.g} ${isTransitioning ? styles.active : ''}`}></div>
-      <div className={`${styles.channel} ${styles.b} ${isTransitioning ? styles.active : ''}`}></div>
-      <div className={styles.noise}></div>
+      {/* RGB 채널 왜곡 */}
+      <div className={`${styles.channel} ${styles.r}`} style={{ opacity: 0.3 + glitchIntensity * 0.5 }}></div>
+      <div className={`${styles.channel} ${styles.g}`} style={{ opacity: 0.3 + glitchIntensity * 0.5 }}></div>
+      <div className={`${styles.channel} ${styles.b}`} style={{ opacity: 0.3 + glitchIntensity * 0.5 }}></div>
+
+      {/* 스크린 노이즈 */}
+      <div className={styles.noise} style={{ opacity: 0.2 + glitchIntensity * 0.6 }}></div>
     </div>
   );
 };

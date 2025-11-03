@@ -5,7 +5,7 @@ import styles from "../../assets/scss/etc/loading.module.scss";
 import fullscreenBlack from "../../assets/img/Fullscreen_black.png";
 import fullscreen from "../../assets/img/Fullscreen.png";
 import screennoise from "../../assets/img/screennoise.png";
-import screennoise1 from "../../assets/img/screennoise_L.png";
+import screennoise1 from "../../assets/img/screennoise_1.png";
 import screennoise2 from "../../assets/img/screennoise2.png";
 import screennoise3 from "../../assets/img/screennoise3.png";
 import screennoise4 from "../../assets/img/screennoise4.png";
