@@ -9,10 +9,16 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: all 0.8s ease-in-out;
+  user-select: none;
 
+  // 🔹 TOP3 화면
   .top-three {
     display: flex;
     gap: 40px;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 1s ease-in-out;
 
     .rank-card {
       width: 250px;
@@ -24,6 +30,12 @@
       text-align: center;
       padding: 20px;
       font-family: 'Orbitron', sans-serif;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+      &:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 30px #31e8ee;
+      }
 
       h2 {
         font-size: 2rem;
@@ -37,9 +49,10 @@
     }
   }
 
+  // 🔹 전체 리더보드 화면
   .expanded-view {
     width: 80%;
-    height: 60%;
+    height: 70%;
     background: rgba(0, 0, 50, 0.7);
     border: 3px solid cyan;
     border-radius: 15px;
@@ -48,11 +61,26 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    cursor: default;
+    animation: fadeIn 1s ease-in-out;
 
     h1 {
       color: #31e8ee;
       font-size: 2.5rem;
       margin-bottom: 20px;
+      font-family: 'Orbitron', sans-serif;
+      text-shadow: 0 0 10px #31e8ee;
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.97);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
     }
   }
 }

@@ -7,7 +7,7 @@ import "../../assets/scss/leaderboard/LeaderboardPage.scss";
 import "../../assets/scss/leaderboard/LeaderboardTable.module.scss";
 import "../../assets/scss/leaderboard/ContestLeaderboard.module.scss";
 import "../../assets/scss/leaderboard/CurrentUserInfo.module.scss";
-import "../../assets/scss/leaderboard/HoloCard.scss"; 
+import "../../assets/scss/leaderboard/HoloCard.scss";
 
 // 🔹 홀로그램 카드 컴포넌트
 const HoloCard: React.FC<{ rank: number; username: string; level: number; exp: number }> = ({
@@ -70,14 +70,20 @@ const LeaderBoardPage: React.FC = () => {
 
   const topThree = leaderboard.slice(0, 3);
 
+  const handleExpand = () => {
+    if (!expanded) setExpanded(true);
+  };
+
   return (
     <Main>
-      <div className="leaderboard-container">
+      <div
+        className={`leaderboard-container ${expanded ? 'expanded' : 'intro'}`}
+        onClick={!expanded ? handleExpand : undefined}
+      >
         {!expanded ? (
           <>
-            <h1 className="leaderboard-title"> TOP 3 RANKERS </h1>
+            <h1 className="leaderboard-title">TOP 3 RANKERS</h1>
 
-            {/* 🔹 카드 배열 구조 변경 */}
             <div className="holo-layout">
               <div className="holo-top">
                 {topThree[0] && (
@@ -110,17 +116,12 @@ const LeaderBoardPage: React.FC = () => {
               </div>
             </div>
 
-            <button className="toggle-btn" onClick={() => setExpanded(true)}>
-              전체 보기
-            </button>
+            <p className="click-hint">Click anywhere to continue...</p>
           </>
         ) : (
           <div className="expanded-view">
             <h1 className="leaderboard-title">전체 리더보드</h1>
             <LeaderboardTable leaderboard={leaderboard} />
-            <button className="toggle-btn" onClick={() => setExpanded(false)}>
-              TOP 3 보기
-            </button>
           </div>
         )}
       </div>
