@@ -3,10 +3,20 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import styles from '../../assets/scss/etc/MainPage.module.scss';
 import fullscreenBlack from '../../assets/img/Fullscreen_black.png';
 import fullscreen from '../../assets/img/Fullscreen.png';
+import screennoise from "../../assets/img/screennoise.png";
+import screennoise1 from "../../assets/img/screennoise_L.png";
+import screennoise2 from "../../assets/img/screennoise2.png";
+import screennoise3 from "../../assets/img/screennoise3.png";
+import screennoise4 from "../../assets/img/screennoise4.png";
 
 const images = [
   fullscreenBlack,
   fullscreen,
+  screennoise,
+  screennoise1,
+  screennoise2,
+  screennoise3,
+  screennoise4,
 ];
 
 const MainPage: React.FC = () => {
