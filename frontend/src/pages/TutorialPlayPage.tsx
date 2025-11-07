@@ -1,10 +1,9 @@
 import React, { useState, useMemo } from 'react';
-import '../assets/scss/etc/TutorialPlayPage.scss';
 import Main from '../components/main/Main';
+import '../assets/scss/etc/TutorialPlayPage.scss';
 
 type StepId = 'connect' | 'spawn' | 'hints' | 'submit';
 
-// 데이터에서 아이콘 정보를 제거하고, title만 사용
 const steps = [
   { 
     id: 'connect' as StepId, 
@@ -28,7 +27,7 @@ const steps = [
   },
 ];
 
-const Play: React.FC = () => {
+const TutorialPlayPage: React.FC = () => {
   const [activeStepId, setActiveStepId] = useState<StepId>('connect');
 
   const activeStepIndex = useMemo(() => 
@@ -71,11 +70,10 @@ const Play: React.FC = () => {
 
   return (
     <Main>
-      <div className="play-container">
-        <div className="play-panel">
-          {/* 왼쪽: 단계 내비게이션 */}
+      <div className="tutorial-play-viewport">
+        <div className="tutorial-play-container">
           <aside className="step-nav-panel">
-            <h1 className="main-title">TUTORIAL</h1>
+            <h1 className="main-title glitch-text" data-text="TUTORIAL">TUTORIAL</h1>
             <nav className="step-list">
               {steps.map((step, index) => (
                 <button 
@@ -86,7 +84,6 @@ const Play: React.FC = () => {
                     ${index < activeStepIndex ? 'completed' : ''}
                   `}
                   onClick={() => setActiveStepId(step.id)}
-                  title={step.title}
                 >
                   {step.title}
                 </button>
@@ -94,15 +91,12 @@ const Play: React.FC = () => {
             </nav>
           </aside>
 
-          {/* 오른쪽: 메인 콘텐츠 영역 (그리드 확장성) */}
           <section className="main-content-area">
-            {/* 상단 설명 영역 */}
             <div className="description-section" key={currentStep.id}>
-              <h2 className="section-title">{currentStep.title.substring(currentStep.title.indexOf('.') + 1).trim()}</h2>
+              <h2 className="section-title">{currentStep.title.split('.')[1].trim()}</h2>
               <p className="section-description">{currentStep.description}</p>
             </div>
 
-            {/* 하단 액션/정보 영역 (확장성을 위해 div로 분리) */}
             <div className="action-info-section">
               {renderAction()}
             </div>
@@ -113,4 +107,4 @@ const Play: React.FC = () => {
   );
 };
 
-export default Play;
+export default TutorialPlayPage;

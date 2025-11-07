@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { User } from "../../types/User";
 import Main from "../../components/main/Main";
 import "../../assets/scss/leaderboard/LeaderBoardPage.scss";
