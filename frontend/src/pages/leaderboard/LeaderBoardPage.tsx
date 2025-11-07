@@ -28,16 +28,17 @@ const LeaderBoardPage: React.FC = () => {
         <div className="overlay-noise" />
 
         {/* 헤더 */}
-        <header className="cyber-header">
-          <h1 className="title-glitch glitch-rgb" data-text="HTO // RANKING SYSTEM">
-            HTO // RANKING SYSTEM
-          </h1>
-          <div className="header-right">
-            <button className="lang-toggle" onClick={toggleLanguage}>
-              {language === "en" ? "한국어" : "EN"}
-            </button>
-          </div>
-        </header>
+<header className="cyber-header">
+  <h1 className="title-glitch" data-text="RANKING">
+    <span className="text">RANKING</span>
+  </h1>
+  <div className="header-right">
+    <button className="lang-toggle" onClick={toggleLanguage}>
+      {language === "en" ? "한국어" : "EN"}
+    </button>
+  </div>
+</header>
+
 
         {/* 메인 콘텐츠 */}
         <div className="leaderboard-grid">
