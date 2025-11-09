@@ -17,7 +17,7 @@ export default defineConfig({
     preprocessorOptions: {
       scss: {
         api: 'modern-compiler',
-        additionalData: `@charset "UTF-8";`,
+        additionalData: `@charset "UTF-8";`, // ✅ 문자열로 감싸야 오류 안 남
       },
     },
   },
@@ -28,13 +28,17 @@ export default defineConfig({
     outDir: 'dist',
     sourcemap: true,
     rollupOptions: {
-      output:{
-          manualChunks(id) {
-              if (id.includes('node_modules')) {
-                  return id.toString().split('node_modules/')[1].split('/')[0].toString();
-              }
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            return id
+              .toString()
+              .split('node_modules/')[1]
+              .split('/')[0]
+              .toString();
           }
-      }
-  }
+        },
+      },
+    },
   },
 });
