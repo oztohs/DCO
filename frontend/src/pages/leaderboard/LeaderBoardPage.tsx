@@ -34,7 +34,7 @@ const LeaderBoardPage: React.FC = () => {
   </h1>
   <div className="header-right">
     <button className="lang-toggle" onClick={toggleLanguage}>
-      {language === "en" ? "한국어" : "EN"}
+      {language === "en" ? "🇺🇸 EN" : "🇰🇷 KR"}
     </button>
   </div>
 </header>

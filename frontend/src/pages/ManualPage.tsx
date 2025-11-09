@@ -31,8 +31,9 @@ const ManualPage: React.FC = () => {
   const stepDialogs = [
     { label: t('tutorialLabel'), desc: t('tutorialDescription'), to: "/tutorial" },
     { label: t('startTutorialLabel'), desc: t('startTutorialDescription'), to: "/tutorial/play" },
-    { label: t('playLabel'), desc: t('playDescription'), to: "/machine" },
     { label: t('learnBasicsLabel'), desc: t('learnBasicsDescription'), to: "/learn" },
+    { label: t('playLabel'), desc: t('playDescription'), to: "/machine" },
+
   ];
 
   // ✅ 클릭으로 페이지 및 대화 흐름 제어
