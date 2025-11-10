@@ -43,39 +43,44 @@
   }
 
   /* ✅ 상단 영역도 동일한 블랙 배경 */
-  .tutorial-page-top {
-    position: relative;
-    z-index: 2;
-    background: #01020a; /* 통일된 색상 */
-    border-bottom: 1px solid rgba(94, 200, 216, 0.25);
+/* ===============================
+   상단 배너 이미지 (HTO Dark / Light)
+=============================== */
+.tutorial-page-top {
+  width: 100%;
+  position: relative;
+  z-index: 2;
+  background: #01020a;
+  border-bottom: 1px solid rgba(94, 200, 216, 0.25);
+  overflow: hidden;
 
-    .tutorial-page-img-dark {
-      width: 100%;
-      object-fit: cover;
-      border-radius: 12px;
-      filter: brightness(0.95) contrast(1.05);
-      border-bottom: 2px solid var(--cyber-light);
-      transition: all 0.5s ease;
-      transform-origin: center;
+  .tutorial-banner {
+    width: 100%; /* ✅ 가로 전체 */
+    height: 28vh; /* ✅ 세로 높이 (원하면 30~35vh로 조절 가능) */
+    object-fit: cover; /* ✅ 이미지 비율 유지하며 가득 채움 */
+    border-bottom: 2px solid var(--cyber-light);
+    transition: transform 0.5s ease, filter 0.5s ease;
+    filter: brightness(1) contrast(1.05);
+    display: block;
+    margin: 0 auto;
 
-      &:hover {
-        transform: scale(1.02) translateY(-4px);
-        filter: brightness(1.1) contrast(1.1);
-        box-shadow: 0 8px 24px rgba(94, 200, 216, 0.4);
-      }
-    }
-
-    &::after {
-      content: "";
-      position: absolute;
-      bottom: -1px;
-      left: 0;
-      width: 100%;
-      height: 2px;
-      background: linear-gradient(90deg, var(--cyber-blue), var(--cyber-light));
-      box-shadow: 0 0 8px rgba(94, 200, 216, 0.6);
+    &:hover {
+      transform: scale(1.03);
+      filter: brightness(1.15) contrast(1.2);
     }
   }
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--cyber-blue), var(--cyber-light));
+    box-shadow: 0 0 8px rgba(94, 200, 216, 0.6);
+  }
+ }
 }
 
 

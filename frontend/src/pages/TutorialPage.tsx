@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import Main from '../components/main/Main';
 import '../assets/scss/etc/TutorialPage.scss';
+import logo_dark from '../assets/img/icon/HTO Dark.png';
+import logo_light from '../assets/img/icon/HTO Light.png';
 
 const TutorialPage: React.FC = () => {
   const { t, i18n } = useTranslation('manual');
   const [step, setStep] = useState(0);
 
-  // 🔹 언어 전환 (텍스트 클릭 시)
+  // 🔹 언어 전환 (로고 클릭 시)
   const handleChangeLanguage = () => {
     const newLang = i18n.language === 'en' ? 'kr' : 'en';
     i18n.changeLanguage(newLang);
@@ -36,19 +38,18 @@ const TutorialPage: React.FC = () => {
 
   return (
     <Main>
-      {/* ✅ 전체 클릭 감지 */}
       <div className="tutorial-page-container" onClick={handleNext}>
-        {/* === 상단 텍스트 로고 === */}
+        {/* === 상단 이미지 로고 === */}
         <div className="tutorial-page-top">
-          <h1
-            className="tutorial-page-logo"
+          <img
+            className="tutorial-banner"
+            src={i18n.language === 'en' ? logo_dark : logo_light}
+            alt="HTO Banner"
             onClick={e => {
               e.stopPropagation();
               handleChangeLanguage();
             }}
-          >
-            🐱 <span className="logo-text">Hack&nbsp;Cat</span>
-          </h1>
+          />
         </div>
 
         {/* === 본문 === */}
