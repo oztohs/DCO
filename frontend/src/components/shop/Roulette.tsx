@@ -10,9 +10,10 @@ interface RouletteProps {
   balance: number;
   setBalance: React.Dispatch<React.SetStateAction<number>>;
   onReward: (rewardId: string) => void;
+  showToast: (msg: string) => void;
 }
 
-const Roulette: React.FC<RouletteProps> = ({ balance, setBalance, onReward }) => {
+const Roulette: React.FC<RouletteProps> = ({ balance, setBalance, onReward, showToast }) => {
   const [isRolling, setIsRolling] = useState(false);
   const [resultItem, setResultItem] = useState<string | null>(null);
 
@@ -29,11 +30,11 @@ const Roulette: React.FC<RouletteProps> = ({ balance, setBalance, onReward }) =>
     if (isRolling) return;
 
     if (balance < 10) {
-      alert("코인이 부족합니다. (필요: 10 HTO)");
+      showToast("코인이 부족합니다! (필요: 10 HTO)");
       return;
     }
 
-    setBalance(prev => prev - 10);
+    setBalance((prev) => prev - 10);
     setIsRolling(true);
 
     const totalWeight = rouletteItems.reduce((sum, item) => sum + item.weight, 0);
@@ -59,7 +60,8 @@ const Roulette: React.FC<RouletteProps> = ({ balance, setBalance, onReward }) =>
     }
 
     setTimeout(() => {
-      if (wheel) wheel.style.transition = "transform 4s cubic-bezier(0.1, 0.95, 0.37, 1)";
+      if (wheel)
+        wheel.style.transition = "transform 4s cubic-bezier(0.1, 0.95, 0.37, 1)";
     }, 50);
 
     const finalAngle = 360 * 6 + slotCenterAngles[selectedIndex];
@@ -70,6 +72,7 @@ const Roulette: React.FC<RouletteProps> = ({ balance, setBalance, onReward }) =>
 
     setTimeout(() => {
       setResultItem(selected.label);
+      showToast(`${selected.label} 획득!`);
       onReward(selected.id);
       setIsRolling(false);
     }, 4200);
@@ -78,7 +81,6 @@ const Roulette: React.FC<RouletteProps> = ({ balance, setBalance, onReward }) =>
   return (
     <div className="roulette-container">
       <div className="roulette-main-row">
-
         <div className="roulette-wheel-box">
           <div className="roulette-pointer">▼</div>
 
@@ -107,7 +109,6 @@ const Roulette: React.FC<RouletteProps> = ({ balance, setBalance, onReward }) =>
             </div>
           )}
         </div>
-
       </div>
 
       <button

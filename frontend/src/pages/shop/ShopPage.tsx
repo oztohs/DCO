@@ -56,15 +56,15 @@ const ShopPage: React.FC = () => {
     if (!item) return;
 
     if (balance < item.price) {
-      showToast("코인이 부족합니다!");
+      showToast(`코인이 부족합니다! (필요: ${item.price} HTO)`);
       return;
     }
 
-    setBalance(balance - item.price);
+    setBalance((prev) => prev - item.price);
 
     const exists = inventory.find((x) => x.itemId === id);
-    let newInventory;
 
+    let newInventory;
     if (exists) {
       newInventory = inventory.map((x) =>
         x.itemId === id ? { ...x, count: x.count + 1 } : x
@@ -105,31 +105,31 @@ const ShopPage: React.FC = () => {
   };
 
   const handleRouletteReward = (rewardId: string) => {
-    const target = inventory.find((x) => x.itemId === rewardId);
-    let newInventory;
+    const item = LOCAL_ITEMS.find((x) => x._id === rewardId);
+    if (!item) return;
 
-    if (target) {
+    const exists = inventory.find((x) => x.itemId === rewardId);
+
+    let newInventory;
+    if (exists) {
       newInventory = inventory.map((x) =>
         x.itemId === rewardId ? { ...x, count: x.count + 1 } : x
       );
     } else {
-      const item = LOCAL_ITEMS.find((x) => x._id === rewardId);
       newInventory = [
         ...inventory,
         {
           itemId: rewardId,
-          name: item?.name || "보상 아이템",
-          icon: item?.icon || "",
-          description: item?.description || "",
+          name: item.name,
+          icon: item.icon,
+          description: item.description,
           count: 1,
         },
       ];
     }
 
-    const gainedItem = LOCAL_ITEMS.find((x) => x._id === rewardId);
-    showToast(`${gainedItem?.name}을 획득했습니다!`, gainedItem?.icon);
-
     saveInventory(newInventory);
+    showToast(`${item.name}을 획득했습니다!`, item.icon);
   };
 
   return (
@@ -148,6 +148,7 @@ const ShopPage: React.FC = () => {
             <button className={tab === "roulette" ? "active" : ""} onClick={() => setTab("roulette")}>룰렛</button>
           </div>
 
+          {/* SHOP */}
           {tab === "shop" && (
             <div className="shop-grid">
               {LOCAL_ITEMS.map((item) => (
@@ -169,6 +170,7 @@ const ShopPage: React.FC = () => {
             </div>
           )}
 
+          {/* INVENTORY */}
           {tab === "inventory" && (
             <div className="inventory-grid">
               {inventory.length === 0 ? (
@@ -197,18 +199,27 @@ const ShopPage: React.FC = () => {
             </div>
           )}
 
+          {/* ROULETTE */}
           {tab === "roulette" && (
-            <Roulette balance={balance} setBalance={setBalance} onReward={handleRouletteReward} />
+            <Roulette
+              balance={balance}
+              setBalance={setBalance}
+              onReward={handleRouletteReward}
+              showToast={(msg) => showToast(msg)}
+            />
           )}
         </div>
       </div>
 
+      {/* NPC HELP */}
       <NPCHelp open={isNPCOpen} onClose={() => setIsNPCOpen(false)} />
 
-      <button className="npc-help-button" onClick={() => setIsNPCOpen((p) => !p)}>
+      {/* NPC BUTTON */}
+      <button className="npc-help-button" onClick={() => setIsNPCOpen((prev) => !prev)}>
         ?
       </button>
 
+      {/* TOAST */}
       {toast && (
         <ShopToast
           message={toast.msg}
