@@ -1,18 +1,18 @@
-/* 전체 배경 (기존 Main 배경 유지됨) */
+/* ============================ */
+/* 기본 레이아웃 */
+/* ============================ */
+
 .shop-layout {
   width: 100%;
   min-height: calc(100vh - 70px);
-
   display: flex;
   justify-content: center;
   padding: 60px 0;
 }
 
-/* 큰 패널 */
 .shop-panel {
   width: 85%;
   max-width: 1600px;
-
   padding: 50px 40px;
   border-radius: 24px;
 
@@ -26,7 +26,6 @@
   z-index: 3;
 }
 
-/* 내부 네온 그리드 패턴 */
 .shop-panel::before {
   content: "";
   position: absolute;
@@ -41,7 +40,6 @@
   z-index: 0;
 }
 
-/* 텍스트들 */
 .shop-title {
   font-size: 3rem;
   font-weight: 700;
@@ -59,7 +57,6 @@
   color: #dffaff;
   text-align: center;
   z-index: 3;
-  position: relative;
 
   strong {
     color: #00eaff;
@@ -67,7 +64,55 @@
   }
 }
 
-/* 아이템 그리드 */
+/* ============================ */
+/* 탭 버튼 */
+/* ============================ */
+
+.shop-tabs {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 35px;
+  position: relative;
+  z-index: 10;
+
+  button {
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: 1px solid #00eaff;
+    background: rgba(0, 0, 0, 0.35);
+    color: #b6f7ff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+
+    &:hover {
+      box-shadow: 0 0 10px #00eaff;
+    }
+
+    &.active {
+      background: rgba(0, 255, 255, 0.18);
+      box-shadow: 0 0 14px #00eaff;
+    }
+  }
+
+  .npc-btn {
+    width: 42px;
+    padding: 10px 0;
+    border-color: #ff33cc;
+    color: #ff33cc;
+
+    &:hover {
+      box-shadow: 0 0 12px #ff33cc;
+    }
+  }
+}
+
+/* ============================ */
+/* 상점 카드 */
+/* ============================ */
+
 .shop-grid {
   display: flex;
   justify-content: center;
@@ -77,7 +122,6 @@
   z-index: 3;
 }
 
-/* 카드 */
 .shop-item-card {
   width: 260px;
   padding: 24px;
@@ -91,8 +135,7 @@
   gap: 12px;
 
   transition: 0.2s ease;
-  box-shadow:
-    inset 0 0 20px rgba(0, 255, 255, 0.12);
+  box-shadow: inset 0 0 20px rgba(0, 255, 255, 0.12);
 
   &:hover {
     transform: translateY(-6px);
@@ -131,7 +174,6 @@
 .shop-item-card__desc {
   color: #cfeeff;
   font-size: 0.95rem;
-  line-height: 1.3;
 }
 
 .shop-item-card__btn {
@@ -144,10 +186,144 @@
   font-weight: 600;
   cursor: pointer;
 
+  &:hover {
+    background: rgba(0, 255, 255, 0.18);
+    box-shadow: 0 0 14px rgba(0, 255, 255, 0.5);
+  }
+}
+
+/* ============================ */
+/* 인벤토리 - 상점 UI 동일 */
+/* ============================ */
+
+.inventory-grid {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 3;
+}
+
+.inventory-item-card {
+  width: 260px;
+  padding: 24px;
+
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(0, 255, 255, 0.4);
+  border-radius: 16px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
   transition: 0.2s ease;
+  box-shadow: inset 0 0 20px rgba(0, 255, 255, 0.12);
+
+  &:hover {
+    transform: translateY(-6px);
+    box-shadow:
+      0 0 18px rgba(0, 255, 255, 0.3),
+      inset 0 0 30px rgba(0, 255, 255, 0.15);
+  }
+}
+
+.inventory-item-card__icon {
+  width: 68px;
+  height: 68px;
+  object-fit: contain;
+  margin: 0 auto;
+  filter: drop-shadow(0 0 12px rgba(0, 255, 255, 0.7));
+}
+
+.inventory-item-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h3 {
+    margin: 0;
+    color: #00eaff;
+    font-size: 1.15rem;
+  }
+}
+
+/* 보유 수량 표시 */
+.inventory-count {
+  color: #ff33cc;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.inventory-item-card__desc {
+  color: #cfeeff;
+  font-size: 0.95rem;
+  line-height: 1.3;
+}
+
+.inventory-item-card__btn {
+  padding: 10px 0;
+  border-radius: 8px;
+
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(0, 255, 255, 0.4);
+  color: #9ffaff;
+  font-weight: 600;
+  cursor: pointer;
 
   &:hover {
     background: rgba(0, 255, 255, 0.18);
     box-shadow: 0 0 14px rgba(0, 255, 255, 0.5);
   }
+}
+
+/* ============================ */
+/* NPC 모달 */
+/* ============================ */
+
+.npc-modal {
+  position: fixed !important;
+  inset: 0;
+  background: rgba(0, 0, 10, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.npc-box {
+  background: rgba(0, 0, 0, 0.85);
+  border: 1px solid #ff33cc;
+  padding: 30px 45px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(255, 0, 200, 0.4);
+
+  h2 {
+    margin-bottom: 12px;
+    color: #ff33cc;
+  }
+
+  button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    border: 1px solid #ff33cc;
+    background: rgba(0, 0, 0, 0.4);
+    color: #ff8fe6;
+    border-radius: 8px;
+    cursor: pointer;
+
+    &:hover {
+      background: rgba(255, 0, 200, 0.15);
+    }
+  }
+}
+
+/* 빈 상태 */
+.placeholder {
+  text-align: center;
+  color: #b7f8ff;
+  font-size: 1.25rem;
+  padding: 40px 0;
 }

@@ -1,0 +1,110 @@
+/* ========================= */
+/* HTO 룰렛 UI */
+/* ========================= */
+
+.roulette-container {
+  text-align: center;
+  padding: 25px;
+  color: #aefaff;
+}
+
+.roulette-title {
+  font-size: 2rem;
+  color: #00eaff;
+  text-shadow: 0 0 12px #00eaff;
+  margin-bottom: 10px;
+}
+
+.roulette-sub {
+  color: #cfeeff;
+  margin-bottom: 25px;
+
+  strong {
+    color: #00eaff;
+    text-shadow: 0 0 8px #00eaff;
+  }
+}
+
+.roulette-wheel-box {
+  position: relative;
+  width: 320px;
+  height: 320px;
+  margin: 0 auto 25px auto;
+}
+
+.roulette-wheel {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 4px solid rgba(0, 255, 255, 0.4);
+  position: relative;
+
+  transition: transform 4s cubic-bezier(0.1, 0.95, 0.37, 1);
+  box-shadow:
+    0 0 25px rgba(0, 255, 255, 0.4),
+    inset 0 0 40px rgba(0, 255, 255, 0.2);
+}
+
+.roulette-segment {
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  left: 50%;
+  top: 50%;
+  transform-origin: 0% 0%;
+
+  background: rgba(0, 0, 0, 0.55);
+  border-left: 2px solid rgba(0, 255, 255, 0.25);
+
+  span {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 0.86rem;
+    color: #dffaff;
+  }
+}
+
+.roulette-pointer {
+  position: absolute;
+  top: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 2.4rem;
+  font-weight: 900;
+
+  color: #ff33cc;
+  text-shadow: 0 0 14px #ff33cc, 0 0 24px #ff33cc;
+}
+
+.roulette-button {
+  padding: 12px 28px;
+  font-size: 1.1rem;
+
+  color: #aefaff;
+  font-weight: 600;
+  cursor: pointer;
+
+  border-radius: 10px;
+  border: 1px solid #00eaff;
+  background: rgba(0, 255, 255, 0.12);
+
+  transition: 0.25s;
+
+  &:hover:not(:disabled) {
+    background: rgba(0, 255, 255, 0.28);
+    box-shadow: 0 0 12px #00eaff;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.roulette-result {
+  margin-top: 20px;
+  font-size: 1.3rem;
+  color: #00ffcc;
+  text-shadow: 0 0 14px #00ffcc;
+}
