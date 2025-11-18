@@ -224,6 +224,15 @@
         }
       }
     }
+/* === 🔵 입력칸 전체 세로 정렬 === */
+.left-fields {
+  grid-column: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+}
+
 
     /* === 등록 버튼 === */
     .add-machine-form-button {
