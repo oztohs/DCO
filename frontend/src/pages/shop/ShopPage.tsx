@@ -6,13 +6,13 @@ import "../../assets/scss/shop/NPCHelp.scss";
 import Main from "../../components/main/Main";
 import Roulette from "../../components/shop/Roulette";
 import NPCHelp from "../../components/shop/NPCHelp";
+import ShopToast from "../../components/shop/ShopToast";
 
 import hint1Img from "../../assets/img/shop/hint1.png";
 import hint3Img from "../../assets/img/shop/hint3.png";
 import randomBuffImg from "../../assets/img/shop/randombuff.png";
 import timeStopImg from "../../assets/img/shop/timestop.png";
 
-/* === 인벤토리 타입 === */
 type InventoryItem = {
   itemId: string;
   name: string;
@@ -21,7 +21,6 @@ type InventoryItem = {
   count: number;
 };
 
-/* === 상점 아이템 목록 === */
 export const LOCAL_ITEMS = [
   { _id: "item-hint1", name: "힌트 1회권", description: "문제 힌트를 1번 열람할 수 있습니다.", price: 5, icon: hint1Img },
   { _id: "item-hint3", name: "힌트 3회권", description: "문제 힌트를 3번 열람할 수 있습니다.", price: 12, icon: hint3Img },
@@ -34,9 +33,10 @@ const ShopPage: React.FC = () => {
   const [tab, setTab] = useState<"shop" | "inventory" | "roulette">("shop");
   const [isNPCOpen, setIsNPCOpen] = useState(false);
 
+  const [toast, setToast] = useState<{ msg: string; icon?: string } | null>(null);
+
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
 
-  /* === 인벤토리 로드 === */
   useEffect(() => {
     const saved = localStorage.getItem("HTO_INVENTORY");
     if (saved) setInventory(JSON.parse(saved));
@@ -47,22 +47,25 @@ const ShopPage: React.FC = () => {
     setInventory(list);
   };
 
-  /* === 아이템 구매 === */
+  const showToast = (msg: string, icon?: string) => {
+    setToast({ msg, icon });
+  };
+
   const handleBuyItem = (id: string) => {
     const item = LOCAL_ITEMS.find((x) => x._id === id);
     if (!item) return;
 
     if (balance < item.price) {
-      alert("코인이 부족합니다.");
+      showToast("코인이 부족합니다!");
       return;
     }
 
     setBalance(balance - item.price);
 
-    const existing = inventory.find((x) => x.itemId === id);
-
+    const exists = inventory.find((x) => x.itemId === id);
     let newInventory;
-    if (existing) {
+
+    if (exists) {
       newInventory = inventory.map((x) =>
         x.itemId === id ? { ...x, count: x.count + 1 } : x
       );
@@ -80,18 +83,16 @@ const ShopPage: React.FC = () => {
     }
 
     saveInventory(newInventory);
-    alert(`${item.name}이(가) 인벤토리에 추가되었습니다.`);
+    showToast(`${item.name}이(가) 인벤토리에 추가되었습니다.`, item.icon);
   };
 
-  /* === 아이템 사용 === */
   const handleUseItem = (itemId: string) => {
     const target = inventory.find((x) => x.itemId === itemId);
     if (!target) return;
 
-    alert(`${target.name}을 사용했습니다!`);
+    showToast(`${target.name}을 사용했습니다!`, target.icon);
 
     let newInventory;
-
     if (target.count > 1) {
       newInventory = inventory.map((x) =>
         x.itemId === itemId ? { ...x, count: x.count - 1 } : x
@@ -103,10 +104,8 @@ const ShopPage: React.FC = () => {
     saveInventory(newInventory);
   };
 
-  /* === 룰렛 보상 지급 === */
   const handleRouletteReward = (rewardId: string) => {
     const target = inventory.find((x) => x.itemId === rewardId);
-
     let newInventory;
 
     if (target) {
@@ -115,7 +114,6 @@ const ShopPage: React.FC = () => {
       );
     } else {
       const item = LOCAL_ITEMS.find((x) => x._id === rewardId);
-
       newInventory = [
         ...inventory,
         {
@@ -127,6 +125,9 @@ const ShopPage: React.FC = () => {
         },
       ];
     }
+
+    const gainedItem = LOCAL_ITEMS.find((x) => x._id === rewardId);
+    showToast(`${gainedItem?.name}을 획득했습니다!`, gainedItem?.icon);
 
     saveInventory(newInventory);
   };
@@ -141,20 +142,12 @@ const ShopPage: React.FC = () => {
             CURRENT BALANCE: <strong>{balance} HTO</strong>
           </p>
 
-          {/* 탭 버튼 */}
           <div className="shop-tabs">
-            <button className={tab === "shop" ? "active" : ""} onClick={() => setTab("shop")}>
-              상점
-            </button>
-            <button className={tab === "inventory" ? "active" : ""} onClick={() => setTab("inventory")}>
-              인벤토리
-            </button>
-            <button className={tab === "roulette" ? "active" : ""} onClick={() => setTab("roulette")}>
-              룰렛
-            </button>
+            <button className={tab === "shop" ? "active" : ""} onClick={() => setTab("shop")}>상점</button>
+            <button className={tab === "inventory" ? "active" : ""} onClick={() => setTab("inventory")}>인벤토리</button>
+            <button className={tab === "roulette" ? "active" : ""} onClick={() => setTab("roulette")}>룰렛</button>
           </div>
 
-          {/* 상점 */}
           {tab === "shop" && (
             <div className="shop-grid">
               {LOCAL_ITEMS.map((item) => (
@@ -176,7 +169,6 @@ const ShopPage: React.FC = () => {
             </div>
           )}
 
-          {/* 인벤토리 */}
           {tab === "inventory" && (
             <div className="inventory-grid">
               {inventory.length === 0 ? (
@@ -185,6 +177,7 @@ const ShopPage: React.FC = () => {
                 inventory.map((item) => (
                   <div className="inventory-item-card" key={item.itemId}>
                     <img src={item.icon} className="inventory-item-card__icon" />
+
                     <div className="inventory-item-card__header">
                       <h3>{item.name}</h3>
                       <span className="inventory-count">x{item.count}</span>
@@ -204,23 +197,25 @@ const ShopPage: React.FC = () => {
             </div>
           )}
 
-          {/* 룰렛 */}
           {tab === "roulette" && (
             <Roulette balance={balance} setBalance={setBalance} onReward={handleRouletteReward} />
           )}
         </div>
       </div>
 
-      {/* === NPC 도움말 팝업 === */}
       <NPCHelp open={isNPCOpen} onClose={() => setIsNPCOpen(false)} />
 
-      {/* === NPC 도움말 버튼 === */}
-      <button
-        className="npc-help-button"
-        onClick={() => setIsNPCOpen((prev) => !prev)}
-      >
+      <button className="npc-help-button" onClick={() => setIsNPCOpen((p) => !p)}>
         ?
       </button>
+
+      {toast && (
+        <ShopToast
+          message={toast.msg}
+          icon={toast.icon}
+          onClose={() => setToast(null)}
+        />
+      )}
     </Main>
   );
 };
