@@ -73,16 +73,15 @@
       }
     }
 
-    /* ✅ 수정된 부분 시작 */
     tbody {
-      display: table-row-group; /* ✅ block → table-row-group */
+      display: table-row-group;
       width: 100%;
       overflow-y: auto;
       max-height: clamp(250px, 50vh, 400px);
       scrollbar-width: none;
 
       tr {
-        display: table-row; /* ✅ table-row로 변경 */
+        display: table-row;
         width: 100%;
         transition: all 0.25s ease-in-out;
         position: relative;
@@ -95,20 +94,18 @@
       }
 
       td {
-        display: table-cell; /* ✅ table-cell로 변경 */
+        display: table-cell;
         text-align: center;
         padding: 1rem 0.5rem;
         vertical-align: middle;
       }
 
-      /* ✅ 각 열의 너비 */
       .table_name, .machine_name { width: 30%; }
       .table_category, .machine_category { width: 20%; }
       .table_rating, .machine_rating { width: 20%; }
       .table_playCount, .machine_playCount { width: 15%; }
       .table_details, .machine_details { width: 15%; }
 
-      /* ✅ 드래그 가능 영역 */
       .machine_name {
         display: flex;
         align-items: center;
@@ -126,26 +123,31 @@
         color: var(--white);
       }
 
-      .machine_details .details_button {
-        background: transparent;
-        border: 1.5px solid var(--mint);
-        color: var(--mint);
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
+      .machine_details {
         display: flex;
+        justify-content: flex-end;
         align-items: center;
-        justify-content: center;
-        transition: all 0.3s ease;
 
-        &:hover {
-          background: rgba(139, 243, 255, 0.15);
-          box-shadow: 0 0 15px var(--mint);
-          animation: glitchMove 0.3s ease-in-out;
+        .details_button {
+          background: transparent;
+          border: 1.5px solid var(--mint);
+          color: var(--mint);
+          border-radius: 50%;
+          width: 40px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.3s ease;
+
+          &:hover {
+            background: rgba(139, 243, 255, 0.15);
+            box-shadow: 0 0 15px var(--mint);
+            animation: glitchMove 0.3s ease-in-out;
+          }
         }
       }
     }
-    /* ✅ 수정된 부분 끝 */
   }
 }
 
@@ -157,6 +159,76 @@
   60% { transform: translate(-1px, 0); }
   80% { transform: translate(1px, 1px); }
   100% { transform: translate(0, 0); }
+}
+
+/* === 아코디언 확장 영역 === */
+.machine_expand_row {
+  background: rgba(139, 243, 255, 0.05);
+  animation: fadeIn 0.3s ease-in-out;
+
+  td {
+    padding: 1.2rem 2rem;
+  }
+
+  .expand_content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    font-family: 'VT323', monospace;
+    color: var(--mint);
+    text-shadow: 0 0 6px var(--mint);
+    line-height: 1.5;
+
+    /* ✨ 설명 텍스트 */
+    .expand_description {
+      font-size: 1.2rem;
+      color: var(--white);
+      text-shadow: 0 0 12px var(--mint);
+      letter-spacing: 0.5px;
+      animation: glowPulse 3s infinite ease-in-out;
+    }
+
+    /* 💬 리뷰 섹션 */
+    .expand_reviews {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      margin-top: 0.6rem;
+
+      p {
+        font-size: 1.1rem;
+        color: var(--mint);
+        text-shadow: 0 0 8px var(--mint);
+        position: relative;
+
+        &::before {
+          content: "★";
+          color: var(--mint);
+          margin-right: 6px;
+          text-shadow: 0 0 10px var(--mint);
+        }
+
+        &:hover {
+          color: var(--white);
+          text-shadow: 0 0 12px var(--mint);
+          transform: translateX(3px);
+          transition: all 0.2s ease-in-out;
+        }
+      }
+    }
+  }
+}
+
+/* ✨ 부드러운 페이드 인 */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 💫 네온 펄스 효과 */
+@keyframes glowPulse {
+  0%, 100% { text-shadow: 0 0 6px var(--mint), 0 0 12px var(--mint); }
+  50% { text-shadow: 0 0 14px var(--mint), 0 0 24px var(--mint); }
 }
 
 /* === 필터 === */
@@ -178,5 +250,93 @@
       color: var(--mint);
       font-family: 'VT323', monospace;
     }
+  }
+}
+/* === GO 버튼 정확히 중앙 정렬 강제 === */
+.machine_list_container .machine_list_table td.machine_details {
+  /* 테이블 셀로 고정 + 가운데 정렬 */
+  display: table-cell !important;
+  text-align: center !important;
+  vertical-align: middle !important;
+  padding: 0.75rem 0 !important;
+  width: 15%;
+}
+
+/* MUI Box 래퍼가 있을 때도 중앙으로 */
+.machine_list_container .machine_list_table td.machine_details > div {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100%;
+}
+
+/* 버튼 자체 중앙 + 사이즈 */
+.machine_list_container .machine_list_table td.machine_details .details_button {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto !important;
+  width: 68px;         /* 필요하면 조절 */
+  height: 40px;
+  border-radius: 8px;
+  border: 1.5px solid var(--mint);
+  background: transparent;
+  color: var(--mint);
+  font-family: 'VT323', monospace;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+  transition: all 0.25s ease;
+}
+
+.machine_list_container .machine_list_table td.machine_details .details_button:hover {
+  background: rgba(139, 243, 255, 0.15);
+  box-shadow: 0 0 12px var(--mint);
+  transform: translateY(-2px);
+}
+.detail_buttons_wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+/* 아코디언 열기/닫기 버튼 (+ / -) */
+.toggle_button {
+  width: 40px;
+  height: 40px;
+  font-size: 1.4rem;
+  font-family: 'Orbitron', sans-serif;
+  border: 1.5px solid var(--mint);
+  background: transparent;
+  color: var(--mint);
+  border-radius: 8px;
+  transition: 0.25s ease;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(139, 243, 255, 0.15);
+    box-shadow: 0 0 10px var(--mint);
+    transform: translateY(-2px);
+  }
+}
+
+/* GO! 버튼 */
+.go_button {
+  width: 68px;
+  height: 40px;
+  border: 1.5px solid var(--mint);
+  background: transparent;
+  color: var(--mint);
+  border-radius: 8px;
+  font-family: 'VT323', monospace;
+  font-size: 1.2rem;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: 0.25s ease;
+
+  &:hover {
+    background: rgba(139, 243, 255, 0.15);
+    box-shadow: 0 0 12px var(--mint);
+    transform: translateY(-2px);
   }
 }
