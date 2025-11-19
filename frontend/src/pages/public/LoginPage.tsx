@@ -46,8 +46,8 @@ const LoginPage: React.FC = () => {
       setTimeout(() => {
         setIsClicked(!isClicked);
         setIsTransitioning(false);
-      }, 500);
-    }, 350);
+      }, 1200);
+    }, 800);
   };
 
   // 회원가입 모달 열기
