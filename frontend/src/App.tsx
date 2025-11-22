@@ -1,3 +1,4 @@
+import './assets/scss/fonts.scss';
 import React, { Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 import Loading from './components/public/Loading';

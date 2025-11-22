@@ -6,6 +6,7 @@ import Box from '@mui/material/Box';
 // import Avatar from '@mui/material/Avatar';
 import { avatarBackgroundColors, getAvatarColorIndex } from '../../utils/avatars';
 import { Avatar } from '@mui/material';
+import { useNavigate } from "react-router-dom";
 /**
  * Props interface for MachineDetail component.
  */
@@ -20,8 +21,8 @@ interface MachineDetailProps {
  * @returns {JSX.Element} The rendered MachineDetail component.
  */
 const MachineDetail: React.FC<MachineDetailProps> = ({ machineDetail }) => {
+  const navigate = useNavigate();
   const { _id, name, category, description, exp, rating, difficulty } = machineDetail;
-
   const avatarColorIndex = getAvatarColorIndex(name);
   const avatarBgColor = avatarBackgroundColors[avatarColorIndex];
 
@@ -118,6 +119,10 @@ const MachineDetail: React.FC<MachineDetailProps> = ({ machineDetail }) => {
             <p className='text'>Reward</p>
             <p className='reward-text'>{exp || 0} EXP</p>
           </div>
+          <button className="machine-play-btn" onClick={() => navigate(`/machine/${_id}/play`)}>
+  Play
+</button>
+
           {/* <p><strong>AMI ID:</strong> {amiId || 'N/A'}</p> */}
           {/* Add more fields as necessary */}
         </div>
