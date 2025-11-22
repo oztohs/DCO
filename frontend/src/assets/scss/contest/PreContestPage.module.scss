@@ -1,58 +1,159 @@
 @use "../style" as *;
 
-.wrapper {
-  width: 100%;
-  height: calc(100vh - 60px);
+.pre_contest_page {
+  @include background_set;
+  width: 50vw;
+  min-height: 30rem;
+  color: var(--white);
+  font-family: 'Orbitron', 'VT323', monospace;
+  padding: 32px;
   display: flex;
+  flex-direction: column;
+  gap: 20px;
   justify-content: center;
   align-items: center;
-}
 
-.card {
-  width: 750px;
-  padding: 40px 50px;
-  background: rgba(8, 18, 28, 0.9);
-  border-radius: 18px;
-  border: 1.5px solid rgba(0, 255, 255, 0.25);
-  box-shadow: 0 0 40px rgba(0, 255, 255, 0.2);
-  font-family: 'Orbitron', 'VT323', sans-serif;
-  color: #eaffff;
+  &::-webkit-scrollbar { display: none; }
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 
-  .title { text-align:center; font-size:2.4rem; font-weight:700; color:#8bf3ff; text-shadow:0 0 14px #8bf3ff; animation: neonPulse 2s infinite alternate; }
-  .subtitle { text-align:center; font-size:1.1rem; opacity:0.85; margin-bottom:12px; }
-  .reward { text-align:center; font-size:1.4rem; margin-bottom:24px; color:#00eaff; text-shadow:0 0 12px #00eaff; }
-  .divider { width:100%; height:2px; background:rgba(0,255,255,0.25); margin:12px 0 24px 0; }
-  .rules_title { font-size:1.5rem; color:#8bf3ff; text-shadow:0 0 10px #00ffff; margin-bottom:8px; display:flex; gap:6px; }
-  .rules ul { padding-left:15px; line-height:1.6; }
-  .join_btn { display:block; margin:26px auto; padding:12px 40px; border-radius:12px; border:2px solid #00eaff; background:rgba(0,255,255,0.12); color:#dffaff; font-size:1.2rem; font-family:'Orbitron', 'VT323'; cursor:pointer; text-shadow:0 0 10px #00eaff; transition: all 0.2s ease-out;
-    &:hover { background: rgba(0,255,255,0.25); box-shadow:0 0 20px #00eaff; transform: translateY(-2px); } 
+  .contest_basic_info {
+    width: 100%;
+    text-align: center;
+    padding: 12px 24px;
+    border-bottom: 2px solid rgba(0,255,255,0.3);
+
+    .contest_name {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--mint);
+      text-shadow: 0 0 12px var(--mint), 0 0 24px var(--mint-glow);
+      animation: neonPulse 2s infinite alternate;
+    }
+
+    .contest_description {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      color: var(--white);
+      text-shadow: 0 0 6px var(--mint);
+    }
+
+    .contest_exp {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--white);
+      text-shadow: 0 0 12px #00eaff;
+    }
+  }
+
+  .under_box {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+
+    .contest_rules {
+      width: 100%;
+      background: rgba(0,0,0,0.5);
+      border: 1px solid var(--mint);
+      border-radius: 16px;
+      padding: 16px;
+      font-size: var(--base-font-size);
+      line-height: 1.6;
+      color: var(--white);
+      box-shadow: 0 0 20px var(--mint-glow);
+
+      .contest_rules_title {
+        font-size: var(--font-size-mid);
+        font-weight: 600;
+        color: var(--mint);
+        text-shadow: 0 0 12px var(--mint);
+        margin-bottom: 8px;
+      }
+
+      ul { padding-left: 20px; }
+    }
+
+    .contest_start {
+      @include button_color;
+      font-weight: 700;
+      font-size: 1.2rem;
+      width: 160px;
+      height: 50px;
+      border-radius: 12px;
+      border: 2px solid var(--mint);
+      background: rgba(0, 255, 255, 0.15);
+      color: var(--white);
+      cursor: pointer;
+      text-shadow: 0 0 12px var(--mint);
+      transition: all 0.3s ease-in-out;
+
+      &:hover {
+        background: rgba(0,255,255,0.35);
+        transform: translateY(-3px);
+        box-shadow: 0 0 20px var(--mint-glow);
+      }
+    }
   }
 }
 
-.modal { padding:24px; text-align:center; color:#fff; }
-.modal_title { font-size:1.8rem; font-weight:800; color:#ff3b3b; text-shadow:0 0 8px #ff3b3b,0 0 16px #ff0000,0 0 24px #ff1a1a; margin-bottom:16px; display:flex; justify-content:center; align-items:center; gap:8px; animation: neonWarning 1.8s infinite alternate; }
-.modal_btn { margin-top:16px; padding:12px 28px; border-radius:12px; border:1px solid #ff3b3b; background:rgba(255,59,59,0.2); color:white; font-weight:700; cursor:pointer; text-shadow:0 0 6px #ff3b3b; transition:all 0.2s ease-in-out;
-  &:hover { background: rgba(255,59,59,0.35); box-shadow:0 0 20px #ff3b3b,0 0 40px #ff1a1a; transform: translateY(-2px); }
-}
-
-.buffering_overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
+// Warning Modal 강화
+.modal_body {
+  width: 100%;
+  padding: 20px;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  z-index: 2000;
+  text-align: center;
+  background-color: rgba(0,0,0,0.85);
+  border-radius: 16px;
+  font-family: 'Orbitron', 'VT323', monospace;
+
+  .contest_warning_title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #ff3b3b;
+    text-shadow: 0 0 8px #ff3b3b, 0 0 16px #ff0000;
+    margin-bottom: 12px;
+    animation: neonWarning 1.8s infinite alternate;
+  }
+
+  .contest_warning {
+    font-weight: 600;
+    line-height: 1.6;
+    color: var(--white);
+    margin-bottom: 16px;
+  }
+
+  .modal_button {
+    width: 160px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    color: var(--white);
+    background: rgba(255,59,59,0.25);
+    text-shadow: 0 0 6px #ff3b3b;
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+      background: rgba(255,59,59,0.45);
+      box-shadow: 0 0 20px #ff3b3b, 0 0 36px #ff0000;
+      transform: translateY(-2px);
+    }
+  }
 }
 
-.buffering_text {
-  color: #ff3b3b;
-  font-size: 2rem;
-  font-weight: 700;
-  text-shadow: 0 0 12px #ff3b3b, 0 0 24px #ff0000, 0 0 36px #ff1a1a;
-  animation: glitchPulse 1.5s infinite alternate;
+@keyframes neonPulse {
+  0% { text-shadow:0 0 6px var(--mint),0 0 12px var(--mint),0 0 18px var(--mint-glow);}
+  50% { text-shadow:0 0 12px var(--mint),0 0 24px var(--mint),0 0 36px var(--mint-glow);}
+  100% { text-shadow:0 0 6px var(--mint),0 0 12px var(--mint),0 0 18px var(--mint-glow);}
 }
 
-@keyframes neonPulse { 0% { text-shadow:0 0 6px #8bf3ff,0 0 12px #8bf3ff,0 0 18px #00ffff; } 50% { text-shadow:0 0 12px #8bf3ff,0 0 24px #8bf3ff,0 0 36px #00ffff; } 100% { text-shadow:0 0 6px #8bf3ff,0 0 12px #8bf3ff,0 0 18px #00ffff; } }
-@keyframes neonWarning { 0% { text-shadow:0 0 6px #ff3b3b,0 0 12px #ff1a1a,0 0 18px #ff0000; } 50% { text-shadow:0 0 12px #ff3b3b,0 0 24px #ff1a1a,0 0 36px #ff0000; } 100% { text-shadow:0 0 6px #ff3b3b,0 0 12px #ff1a1a,0 0 18px #ff0000; } }
-@keyframes glitchPulse { 0% { text-shadow:0 0 8px #ff3b3b,0 0 16px #ff0000,0 0 24px #ff1a1a; } 50% { text-shadow:0 0 16px #ff3b3b,0 0 32px #ff0000,0 0 48px #ff1a1a; } 100% { text-shadow:0 0 8px #ff3b3b,0 0 16px #ff0000,0 0 24px #ff1a1a; } }
+@keyframes neonWarning {
+  0%,100% { text-shadow:0 0 6px #ff3b3b,0 0 12px #ff0000; }
+  50% { text-shadow:0 0 12px #ff3b3b,0 0 24px #ff0000; }
+}
