@@ -26,7 +26,7 @@ interface MachineFormData {
 }
 
 interface ValidationErrors {
-    [key: string]: string;
+  [key: string]: string;
 }
 
 const AddMachineForm: React.FC = () => {
@@ -61,9 +61,7 @@ const AddMachineForm: React.FC = () => {
   const [registerComplete, setRegisterComplete] = useState(false);
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
@@ -115,7 +113,7 @@ const AddMachineForm: React.FC = () => {
       const newSkills = skills.includes(skill)
         ? skills.filter(s => s !== skill)
         : [...skills, skill];
-      
+
       return {
         ...prevData,
         creatorSurvey: {
@@ -128,45 +126,36 @@ const AddMachineForm: React.FC = () => {
 
   const validateForm = (): boolean => {
     const errors: ValidationErrors = {};
-    
+
     if (!formData.name || formData.name.length < 3) {
-        errors.name = 'Name must be at least 3 characters long';
+      errors.name = 'Name must be at least 3 characters long';
     }
-    
     if (!formData.category) {
-        errors.category = 'Category is required';
+      errors.category = 'Category is required';
     }
-    
     if (!formData.amiId || !/^ami-[0-9a-fA-F]{8,17}$/.test(formData.amiId)) {
-        errors.amiId = 'Invalid AMI ID format';
+      errors.amiId = 'Invalid AMI ID format';
     }
-    
     if (!formData.flag || formData.flag.length < 5) {
-        errors.flag = 'Flag must be at least 5 characters long';
+      errors.flag = 'Flag must be at least 5 characters long';
     }
-    
     if (!formData.description || formData.description.length < 4) {
-        errors.description = 'Description must be at least 4 characters long';
+      errors.description = 'Description must be at least 4 characters long';
     }
-    
     if (!formData.exp || formData.exp < 50) {
-        errors.exp = 'Experience points must be at least 50';
+      errors.exp = 'Experience points must be at least 50';
     }
-    
     if (!formData.hints.length || formData.hints.some(hint => !hint.trim())) {
-        errors.hints = 'At least one valid hint is required';
+      errors.hints = 'At least one valid hint is required';
     }
-
     if (!formData.difficulty.creatorLevel) {
-        errors.difficulty = 'Please select difficulty level';
+      errors.difficulty = 'Please select difficulty level';
     }
-
     if (!formData.creatorSurvey.estimatedTime || formData.creatorSurvey.estimatedTime < 1) {
-        errors.estimatedTime = 'Please enter estimated time';
+      errors.estimatedTime = 'Please enter estimated time';
     }
-
     if (!formData.creatorSurvey.technicalComplexity) {
-        errors.technicalComplexity = 'Please select technical complexity';
+      errors.technicalComplexity = 'Please select technical complexity';
     }
 
     setValidationErrors(errors);
@@ -179,8 +168,8 @@ const AddMachineForm: React.FC = () => {
     setValidationErrors({});
 
     if (!validateForm()) {
-        setError('Please fix the validation errors below.');
-        return;
+      setError('Please fix the validation errors below.');
+      return;
     }
 
     try {
@@ -205,41 +194,46 @@ const AddMachineForm: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit} className='add-machine-form'>
+
+      {/* 상단 기존 헤더 - Back 버튼 제거됨 */}
       <div className='back-button'>
         <h2>Add New Machine</h2>
-        <button className="IconButton" type='button' onClick={() => navigate(-1)}>
-          <IoMdArrowRoundBack style={{ color: 'white', fontSize: "34px" }} />
-        </button>
       </div>
 
       {error && (
-        <div className='error-message' style={{ 
-          color: 'red',
-          padding: '10px',
-          marginBottom: '20px',
-          backgroundColor: 'rgba(255, 0, 0, 0.1)',
-          borderRadius: '4px'
-        }}>
+        <div
+          className='error-message'
+          style={{
+            color: 'red',
+            padding: '10px',
+            marginBottom: '20px',
+            backgroundColor: 'rgba(255, 0, 0, 0.1)',
+            borderRadius: '4px'
+          }}
+        >
           {error}
         </div>
       )}
 
       <div className='create-container'>
 
-        {/* 난이도 설문 섹션 - 오른쪽에 고정 */}
+        {/* 난이도 섹션 */}
         <div className='difficulty-survey-section'>
           <h3>Difficulty Survey</h3>
-          
-          {/* 난이도 선택 */}
+
           <div className='difficulty-container'>
-            <label htmlFor='difficulty'>Expected Difficulty Level <span style={{ color: 'red' }}>*</span></label>
+            <label htmlFor='difficulty'>
+              Expected Difficulty Level <span style={{ color: 'red' }}>*</span>
+            </label>
             <select
               id='difficulty'
               value={formData.difficulty.creatorLevel}
-              onChange={(e) => setFormData(prev => ({
-                ...prev,
-                difficulty: { creatorLevel: e.target.value }
-              }))}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  difficulty: { creatorLevel: e.target.value }
+                }))
+              }
               className={validationErrors.difficulty ? 'error-input' : ''}
             >
               <option value="">--Select Difficulty--</option>
@@ -254,20 +248,24 @@ const AddMachineForm: React.FC = () => {
             )}
           </div>
 
-          {/* 예상 소요 시간 */}
           <div className='estimated-time-container'>
-            <label htmlFor='estimatedTime'>Estimated Time to Solve (minutes) <span style={{ color: 'red' }}>*</span></label>
+            <label htmlFor='estimatedTime'>
+              Estimated Time to Solve (minutes){' '}
+              <span style={{ color: 'red' }}>*</span>
+            </label>
             <input
               type='number'
               id='estimatedTime'
               value={formData.creatorSurvey.estimatedTime}
-              onChange={(e) => setFormData(prev => ({
-                ...prev,
-                creatorSurvey: {
-                  ...prev.creatorSurvey,
-                  estimatedTime: Number(e.target.value)
-                }
-              }))}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  creatorSurvey: {
+                    ...prev.creatorSurvey,
+                    estimatedTime: Number(e.target.value)
+                  }
+                }))
+              }
               min={1}
               placeholder='30'
               className={validationErrors.estimatedTime ? 'error-input' : ''}
@@ -277,15 +275,23 @@ const AddMachineForm: React.FC = () => {
             )}
           </div>
 
-          {/* 필요한 스킬 */}
           <div className='required-skills-container'>
             <label>Required Skills (optional)</label>
             <div className='skills-checkbox-group'>
-              {availableSkills.map(skill => (
-                <label key={skill} className={formData.creatorSurvey.requiredSkills.includes(skill) ? 'skill-selected' : ''}>
+              {availableSkills.map((skill) => (
+                <label
+                  key={skill}
+                  className={
+                    formData.creatorSurvey.requiredSkills.includes(skill)
+                      ? 'skill-selected'
+                      : ''
+                  }
+                >
                   <input
                     type='checkbox'
-                    checked={formData.creatorSurvey.requiredSkills.includes(skill)}
+                    checked={formData.creatorSurvey.requiredSkills.includes(
+                      skill
+                    )}
                     onChange={() => handleSkillToggle(skill)}
                   />
                   <span>{skill}</span>
@@ -294,19 +300,22 @@ const AddMachineForm: React.FC = () => {
             </div>
           </div>
 
-          {/* 기술적 복잡도 */}
           <div className='technical-complexity-container'>
-            <label htmlFor='technicalComplexity'>Technical Complexity <span style={{ color: 'red' }}>*</span></label>
+            <label htmlFor='technicalComplexity'>
+              Technical Complexity <span style={{ color: 'red' }}>*</span>
+            </label>
             <select
               id='technicalComplexity'
               value={formData.creatorSurvey.technicalComplexity}
-              onChange={(e) => setFormData(prev => ({
-                ...prev,
-                creatorSurvey: {
-                  ...prev.creatorSurvey,
-                  technicalComplexity: Number(e.target.value)
-                }
-              }))}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  creatorSurvey: {
+                    ...prev.creatorSurvey,
+                    technicalComplexity: Number(e.target.value)
+                  }
+                }))
+              }
               className={validationErrors.technicalComplexity ? 'error-input' : ''}
             >
               <option value={1}>1 - Very Simple</option>
@@ -316,20 +325,24 @@ const AddMachineForm: React.FC = () => {
               <option value={5}>5 - Very Complex</option>
             </select>
             {validationErrors.technicalComplexity && (
-              <span className='field-error'>{validationErrors.technicalComplexity}</span>
+              <span className='field-error'>
+                {validationErrors.technicalComplexity}
+              </span>
             )}
           </div>
         </div>
 
         <div className='name-container'>
-          <label htmlFor='name'>Machine Name <span style={{ color: 'red' }}>*</span></label>
+          <label htmlFor='name'>
+            Machine Name <span style={{ color: 'red' }}>*</span>
+          </label>
           <input
             type='text'
             id='name'
             name='name'
             value={formData.name}
             onChange={handleChange}
-            placeholder="Enter the machine name"
+            placeholder='Enter the machine name'
             className={validationErrors.name ? 'error-input' : ''}
           />
           {validationErrors.name && (
@@ -338,10 +351,12 @@ const AddMachineForm: React.FC = () => {
         </div>
 
         <div className='category-container'>
-          <label htmlFor='category'>Category <span style={{ color: 'red' }}>*</span></label>
+          <label htmlFor='category'>
+            Category <span style={{ color: 'red' }}>*</span>
+          </label>
           <select
-            id="category"
-            name="category"
+            id='category'
+            name='category'
             value={formData.category}
             onChange={(e) => handleChange(e as any)}
             className={validationErrors.category ? 'error-input' : ''}
@@ -362,7 +377,9 @@ const AddMachineForm: React.FC = () => {
         </div>
 
         <div className='amiId-container'>
-          <label htmlFor='amiId'>AMI ID <span style={{ color: 'red' }}>*</span></label>
+          <label htmlFor='amiId'>
+            AMI ID <span style={{ color: 'red' }}>*</span>
+          </label>
           <input
             type='text'
             id='amiId'
@@ -378,7 +395,9 @@ const AddMachineForm: React.FC = () => {
         </div>
 
         <div className='flag-container'>
-          <label htmlFor='flag'>Flag <span style={{ color: 'red' }}>*</span></label>
+          <label htmlFor='flag'>
+            Flag <span style={{ color: 'red' }}>*</span>
+          </label>
           <input
             type='text'
             id='flag'
@@ -394,7 +413,9 @@ const AddMachineForm: React.FC = () => {
         </div>
 
         <div className='Description-container'>
-          <label htmlFor='description'>Description <span style={{ color: 'red' }}>*</span></label>
+          <label htmlFor='description'>
+            Description <span style={{ color: 'red' }}>*</span>
+          </label>
           <textarea
             ref={descriptionRef}
             id='description'
@@ -410,7 +431,9 @@ const AddMachineForm: React.FC = () => {
         </div>
 
         <div className='exp-container'>
-          <label htmlFor='exp'>Reward (EXP) <span style={{ color: 'red' }}>*</span></label>
+          <label htmlFor='exp'>
+            Reward (EXP) <span style={{ color: 'red' }}>*</span>
+          </label>
           <input
             type='number'
             id='exp'
@@ -425,8 +448,14 @@ const AddMachineForm: React.FC = () => {
           )}
         </div>
 
+        {/* ------------------------------ */}
+        {/* 🔥 Back 버튼이 실제로 이동한 부분 */}
+        {/* ------------------------------ */}
         <div className='hint-container'>
-          <label>Hints <span style={{ color: 'red' }}>*</span></label>
+          <label>
+            Hints <span style={{ color: 'red' }}>*</span>
+          </label>
+
           {formData.hints.map((hint, index) => (
             <div className='key-container' key={index}>
               <input
@@ -450,11 +479,23 @@ const AddMachineForm: React.FC = () => {
               )}
             </div>
           ))}
+
           {validationErrors.hints && (
             <span className='field-error'>{validationErrors.hints}</span>
           )}
+
           <button className='add-hint' type='button' onClick={addHint}>
             Add Hint
+          </button>
+
+          {/* 🔥 여기! Back 버튼이 정확히 들어감 */}
+          <button
+            className="IconButton"
+            type="button"
+            onClick={() => navigate(-1)}
+            style={{ marginTop: '16px' }} // 위치 보조
+          >
+            <IoMdArrowRoundBack style={{ color: 'white', fontSize: "34px" }} />
           </button>
         </div>
 
@@ -462,8 +503,16 @@ const AddMachineForm: React.FC = () => {
           <button type='submit'>Add Machine</button>
         </div>
       </div>
-      
-      {registerComplete && <RegisterCompleteMD onClose={() => {setRegisterComplete(false); navigate('/machine');}} mode='machine' />}
+
+      {registerComplete && (
+        <RegisterCompleteMD
+          onClose={() => {
+            setRegisterComplete(false);
+            navigate('/machine');
+          }}
+          mode='machine'
+        />
+      )}
     </form>
   );
 };
