@@ -1,199 +1,148 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Main from '../../components/main/Main';
-import { useParams } from 'react-router-dom';
-import { ContestDetail as ContestDetailType } from '../../types/Contest';
+import { useParams, useNavigate } from 'react-router-dom';
 import { getContestDetails, participateInContest } from '../../api/axiosContest';
-import { useNavigate, NavigateFunction } from 'react-router-dom';
-import Modal from '../../components/modal/Modal'; // Importing the Modal component
-import styles from '../../assets/scss/contest/PreContestPage.module.scss';
+import { ContestDetail as ContestDetailType } from '../../types/Contest';
+import Modal from '../../components/modal/Modal';
 import Loading from '../../components/public/Loading';
 import { MdOutlineRule } from "react-icons/md";
+import styles from '../../assets/scss/contest/PreContestPage.module.scss';
 
 const PreContestPage: React.FC = () => {
   const { contestId } = useParams<{ contestId: string }>();
+  const navigate = useNavigate();
+
   const [contestDetail, setContestDetail] = useState<ContestDetailType | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false); // State to control Modal visibility
-  const [isCompleted, setIsCompleted] = useState<boolean>(false); // State to check if contest participation is completed
-  const [isFound, setIsFound] = useState<boolean>(false); // State to check if contest participation is found
-  const navigate: NavigateFunction = useNavigate();
 
-  /**
-   * Fetches the contest details from the API.
-   */
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCompleted, setIsCompleted] = useState(false);
+  const [isFound, setIsFound] = useState(false);
+  const [isBuffering, setIsBuffering] = useState(false);
+
   useEffect(() => {
-    const fetchContestDetail = async () => {
-      if (!contestId) {
-        setError('Contest ID is missing.');
-        setIsLoading(false);
-        return;
-      }
-
+    const loadData = async () => {
+      if (!contestId) return setError('Missing contest ID');
       try {
-        setIsLoading(true); // Start loading
-        const response = await getContestDetails(contestId);
-        setContestDetail(response.contest);
-      } catch (error: any) {
-        console.error('Error fetching contest details:', error.message || error);
-        setError('Failed to fetch contest details.');
+        setIsLoading(true);
+        const res = await getContestDetails(contestId);
+        setContestDetail(res.contest);
+      } catch (err) {
+        setError("Failed to load contest details.");
       } finally {
-        setIsLoading(false); // End loading
+        setIsLoading(false);
       }
     };
-
-    fetchContestDetail();
+    loadData();
   }, [contestId]);
 
-  if (isLoading) {
-    return (
-      <Main title="Contest Detail" description="Loading contest details.">
-        <div className="contest-detail-page loading">
-          <Loading />
-        </div>
-      </Main>
-    );
-  }
+  if (isLoading) return <Main title="Loading"><Loading /></Main>;
+  if (error || !contestDetail) return <Main title="Contest Detail"><p>{error || "Contest not found."}</p></Main>;
 
-  if (error || !contestDetail) {
-    return (
-      <Main title="Contest Detail" description="Failed to load contest details.">
-        <div className="contest-detail-page error">
-          <p className="error-message">{error || 'Contest not found.'}</p>
-        </div>
-      </Main>
-    );
-  }
+  const handleStartContest = () => setIsModalOpen(true);
 
-  const handleStartContest = () => {
-    setIsModalOpen(true);
-  };
-
-  // Handler to close the modal and redirect to main
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setIsFound(false);
-    setIsCompleted(false);
-  };
-  
   const handleJoinContest = async () => {
+    setIsModalOpen(false);
+    setIsBuffering(true);
+
     try {
-      if (!contestId) {
-        setError('Contest ID is missing.');
-        return;
-      }
-  
-      const participation = await participateInContest(contestId);
-      if (participation) {
-        setIsModalOpen(true);
-      } else {
-        setError(participation.msg);
-      }
-    } catch (error: any) {
-      if (error.message === "FOUND") {
-        // User has already participated the contest
-        setIsFound(true); // Open the modal instead of redirecting immediately
-        return;
-      }
-      // Check if the error response exists
-      if (error.message === "COMPLETED") {
-        // User has already completed the contest
-        setIsCompleted(true);
-  
-        return;
-      }
-      // Handle other specific status codes if needed
-      setError(error.response.data.msg || 'Failed to start contest.');
-      console.error('Error starting contest:', error.message || error);
-      setError('Failed to start contest.');
-  
+      const result = await participateInContest(contestId!);
+      console.log('participateInContest result:', result); // 서버 응답 확인용
+
+      setTimeout(() => {
+        setIsBuffering(false);
+
+        if (result && typeof result === 'object') {
+          switch (result.status) {
+            case "FOUND":
+              setIsFound(true);
+              break;
+            case "COMPLETED":
+              setIsCompleted(true);
+              break;
+            case "OK":
+            case "SUCCESS":
+              navigate(`/contest/${contestId}/play`);
+              break;
+            default:
+              setError(result.msg || "Failed to join contest.");
+          }
+        } else {
+          // 예상치 못한 구조
+          setError("Unexpected server response.");
+        }
+      }, 1800);
+    } catch (err: any) {
+      setIsBuffering(false);
+      setError(err?.message || "Failed to join contest.");
     }
-    navigate(`/contest/${contestId}/play`);
   };
 
-  const handleCompletedContest = () => {
-    setIsModalOpen(false);
-    navigate(`/contest/${contestId}`);
-  };
-
-  const handleContinueContest = () => {
-    setIsModalOpen(false);
-    navigate(`/contest/${contestId}/play`);
-  };
+  const closeModal = () => { setIsModalOpen(false); setIsFound(false); setIsCompleted(false); };
+  const continueContest = () => navigate(`/contest/${contestId}/play`);
+  const goBackToDetail = () => navigate(`/contest/${contestId}`);
 
   return (
-    <Main title="Pre Contest" description="Pre Contest 화면입니다.">
-      <div className={styles.pre_contest_page}>
-        <div className={styles.contest_basic_info}>
-          <h1 className={styles.contest_name}>{contestDetail.name}</h1>
-          <h2 className={styles.contest_description}>{contestDetail.description}</h2>
-          <h3 className={styles.contest_exp}> Reward: {contestDetail.contestExp} EXP</h3>
-        </div>
-        <div className={styles.under_box}>
-          <div className={styles.contest_rules}>
-            <div className={styles.contest_rules_title}>
-              <p><MdOutlineRule size={25} /> Contest Rules</p>
-            </div>
+    <Main title="Pre Contest">
+      <div className={styles.wrapper}>
+        <div className={styles.card}>
+          <h1 className={styles.title}>{contestDetail.name}</h1>
+          <h2 className={styles.subtitle}>{contestDetail.description}</h2>
+          <h3 className={styles.reward}>Reward: {contestDetail.contestExp} EXP</h3>
+
+          <div className={styles.divider} />
+
+          <div className={styles.rules}>
+            <p className={styles.rules_title}><MdOutlineRule size={25} /> Contest Rules</p>
             <ul>
               <li>1. You can only play one machine at a time.</li>
-              <li>2. While playing, hints are provided for the machine.</li>
-              <li>3. You must submit the flag of the machine you are playing.</li>
-              <li>4. To finish the contest, you must complete all machines.</li>
+              <li>2. Hints are provided while playing.</li>
+              <li>3. Submit the flag of the machine you are playing.</li>
+              <li>4. Complete all machines to finish the contest.</li>
               <li>5. The reward decreases over time.</li>
               <li>6. The contest ends when the time runs out.</li>
-              <li>7. If you finished the contest, you can earn experience points (EXP).</li>
+              <li>7. Earn EXP when you finish the contest.</li>
               <li>8. Good luck!</li>
             </ul>
           </div>
-          <button className={styles.contest_start} onClick={handleStartContest}>Join Contest</button>
+
+          <button className={styles.join_btn} onClick={handleStartContest}>Join Contest</button>
         </div>
       </div>
-      {/* When user participated in the contest */}
+
       {isModalOpen && (
-        <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
-          <div className={styles.modal_body}>
-          <div className={styles.contest_warning}>
-            <div className={styles.contest_warning_title}>
-              Warning
-            </div>
-            <p>
-              Once you join the contest, progress will be recorded.
-              <br />
-            </p>
-          </div>
-          <button onClick={handleJoinContest} className={styles.modal_button}>
-            Let's Go!
-          </button>
+        <Modal isOpen={isModalOpen} onClose={closeModal}>
+          <div className={styles.modal}>
+            <h3 className={styles.modal_title}>⚠️ Warning</h3>
+            <p>Once you join, your progress will be recorded!</p>
+            <button className={styles.modal_btn} onClick={handleJoinContest}>Let's Go!</button>
           </div>
         </Modal>
       )}
-      {/* When user already completed the contest */}
-      {isCompleted && (
-        <Modal isOpen={isCompleted} onClose={handleCloseModal}>
-          <div className={styles.modal_body}>
-          <div className={styles.contest_warning}>
-            <div className={styles.contest_warning_title}>
-              You have already completed the contest.
-            </div>
-          </div>
-          <button onClick={handleCompletedContest} className={styles.modal_button}>
-            Go Back
-          </button>
-        </div>
-        </Modal>
-      )}
-      {/* When user already participated in the contest */}
+
       {isFound && (
-        <Modal isOpen={isFound} onClose={handleCloseModal}>
-          <div className={styles.modal_body}>
-            <div className={styles.contest_warning}>
-                <p>You have been participating in the contest.</p>
-            </div>
-            <button onClick={handleContinueContest} className={styles.modal_button}>
-              Continue
-            </button>
+        <Modal isOpen={isFound} onClose={closeModal}>
+          <div className={styles.modal}>
+            <p>You are already participating in this contest.</p>
+            <button className={styles.modal_btn} onClick={continueContest}>Continue</button>
           </div>
         </Modal>
+      )}
+
+      {isCompleted && (
+        <Modal isOpen={isCompleted} onClose={closeModal}>
+          <div className={styles.modal}>
+            <p>You have already completed this contest.</p>
+            <button className={styles.modal_btn} onClick={goBackToDetail}>Go Back</button>
+          </div>
+        </Modal>
+      )}
+
+      {isBuffering && (
+        <div className={styles.buffering_overlay}>
+          <div className={styles.buffering_text}>Joining contest...</div>
+        </div>
       )}
     </Main>
   );

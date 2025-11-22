@@ -57,84 +57,78 @@ const ContestList: React.FC = () => {
     navigate(`/contest/${contestId}`);
   };
 
-  const listForTab = () => {
+  const getList = () => {
     if (activeTab === 'ongoing') return ongoingContests;
     if (activeTab === 'notStarted') return notStartedContests;
     return endedContests;
   };
 
-  if (loading) return <LoadingIcon />;
+  const list = getList();
 
   return (
     <div className={styles.contest_list_container}>
-      <div className={styles.contest_list_title}>Contests</div>
+      <h2 className={styles.contest_title}>Contests</h2>
 
-      {/* 🌟 플로팅 Add Contest 버튼 */}
-      <button
-        className={styles.floating_add_button}
-        onClick={() => navigate('/contest/add')}
-      >
-        <span className={styles.icon}>🏆</span>
-        <span className={styles.text}>Add Contest</span>
-      </button>
-
+          {/* 탭 */}
       <div className={styles.tabs}>
-        <button
-          className={`${styles.tab_button} ${activeTab === 'ongoing' ? styles.active : ''}`}
-          onClick={() => setActiveTab('ongoing')}
-        >
-          <p>Ongoing</p>
-        </button>
-
-        <button
-          className={`${styles.tab_button} ${activeTab === 'notStarted' ? styles.active : ''}`}
-          onClick={() => setActiveTab('notStarted')}
-        >
-          <p>Not Started</p>
-        </button>
-
-        <button
-          className={`${styles.tab_button} ${activeTab === 'ended' ? styles.active : ''}`}
-          onClick={() => setActiveTab('ended')}
-        >
-          <p>Ended</p>
-        </button>
+        {['ongoing', 'notStarted', 'ended'].map((tab) => (
+          <button
+            key={tab}
+            className={`${styles.tab_button} ${
+              activeTab === tab ? styles.active : ''
+            }`}
+            onClick={() => setActiveTab(tab as any)}
+          >
+            {tab === 'ongoing' && 'Ongoing'}
+            {tab === 'notStarted' && 'Not Started'}
+            {tab === 'ended' && 'Ended'}
+          </button>
+        ))}
       </div>
 
       {/* 카드 리스트 */}
       <div className={styles.card_grid}>
-        {listForTab().map((contest) => (
-          <div
-            key={contest._id}
-            className={styles.card_item}
-            onClick={() => handleContestClick(contest._id)}
-          >
-            <Avatar
-              variant="rounded"
-              className={styles.card_avatar}
-              sx={{
-                backgroundColor:
-                  avatarBackgroundColors[getAvatarColorIndex(contest.name)],
-              }}
+        {loading ? (
+          <LoadingIcon />
+        ) : list.length === 0 ? (
+          <p className={styles.no_contests}>No contests available.</p>
+        ) : (
+          list.map((item) => (
+            <div
+              key={item._id}
+              className={styles.contest_card}
+              onClick={() => handleContestClick(item._id)}
             >
-              {contest.name.charAt(0).toUpperCase()}
-            </Avatar>
+              <div className={styles.card_header}>
+                <Avatar
+                  variant="rounded"
+                  sx={{
+                    backgroundColor:
+                      avatarBackgroundColors[getAvatarColorIndex(item.name)],
+                    width: 52,
+                    height: 52,
+                  }}
+                >
+                  {item.name.charAt(0).toUpperCase()}
+                </Avatar>
 
-            <div className={styles.card_title}>
-              {contest.name.charAt(0).toUpperCase() + contest.name.slice(1)}
+                <div className={styles.card_title}>
+                  {item.name.charAt(0).toUpperCase() + item.name.slice(1)}
+                </div>
+
+                <div className={styles.go_icon}>
+                  <IoMdArrowRoundForward />
+                </div>
+              </div>
+
+              <div className={styles.card_info}>
+                <p>📅 Start: {formatDate(item.startTime)}</p>
+                <p>⏳ End: {formatDate(item.endTime)}</p>
+                <p>⭐ Reward: {item.contestExp} EXP</p>
+              </div>
             </div>
-
-            <div className={styles.card_info}>
-              <p>📅 Start: {formatDate(contest.startTime)}</p>
-              <p>⏳ End: {formatDate(contest.endTime)}</p>
-              <p>⭐ Reward: {contest.contestExp} EXP</p>
-            </div>
-
-            <button className={styles.details_button}>
-              <IoMdArrowRoundForward size={24} />
-            </button>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );
