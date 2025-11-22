@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+// src/pages/contest/ContestList.tsx
+import React, { useState, useEffect } from 'react';
 import { getActiveContests } from '../../api/axiosContest';
 import { useNavigate } from 'react-router-dom';
 import { formatDate } from '../../utils/dateUtils';
 
 import styles from '../../assets/scss/contest/ContestList.module.scss';
-import { Avatar, Box } from '@mui/material';
+import { Avatar } from '@mui/material';
 import { avatarBackgroundColors, getAvatarColorIndex } from '../../utils/avatars';
 import LoadingIcon from '../public/LoadingIcon';
 import { IoMdArrowRoundForward } from 'react-icons/io';
@@ -30,7 +31,9 @@ const ContestList: React.FC = () => {
   const [notStartedContests, setNotStartedContests] = useState<Contest[]>([]);
   const [endedContests, setEndedContests] = useState<Contest[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [activeTab, setActiveTab] = useState<'ongoing' | 'notStarted' | 'ended'>('ongoing');
+  const [activeTab, setActiveTab] =
+    useState<'ongoing' | 'notStarted' | 'ended'>('ongoing');
+
   const navigate = useNavigate();
 
   const fetchContests = async () => {
@@ -54,87 +57,27 @@ const ContestList: React.FC = () => {
     navigate(`/contest/${contestId}`);
   };
 
-  const renderContests = () => {
-    let contestsToDisplay: Contest[] = [];
-
-    if (activeTab === 'ongoing') {
-      contestsToDisplay = ongoingContests;
-    } else if (activeTab === 'notStarted') {
-      contestsToDisplay = notStartedContests;
-    } else if (activeTab === 'ended') {
-      contestsToDisplay = endedContests;
-    }
-
-    if (contestsToDisplay.length === 0) {
-      return (
-        <tbody>
-          <tr>
-            {/* <td colSpan={6} className={styles.no_data}>No contests available.</td> */}
-          </tr>
-        </tbody>
-      );
-    }
-
-    if (loading) {
-      return <LoadingIcon />;
-    }
-
-    return (
-      <tbody>
-        {contestsToDisplay.map((contest) =>
-        (
-          <tr className={styles.contest_box} key={contest._id}>
-            <td className={styles.contest_name}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 'clamp(8px, 2vw, 16px)', width: '100%' }}>
-                <Avatar
-                  variant="rounded"
-                  sx={{
-                    backgroundColor: avatarBackgroundColors[getAvatarColorIndex(contest.name)],
-                    width: 'clamp(32px, 5vw, 40px)',
-                    height: 'clamp(32px, 5vw, 40px)',
-                    fontSize: 'clamp(14px, 2vw, 16px)',
-                  }}
-                >
-                  {contest.name.charAt(0).toUpperCase()}
-                </Avatar>
-                <span>{contest.name.charAt(0).toUpperCase() + contest.name.slice(1)}</span>
-              </Box>
-            </td>
-            <td className={styles.contest_start_time}>
-              <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                {formatDate(contest.startTime)}
-              </Box>
-            </td>
-            <td className={styles.contest_end_time}>
-              <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                {formatDate(contest.endTime)}
-              </Box>
-            </td>
-            <td className={styles.contest_reward}>
-              <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                {contest.contestExp}
-              </Box>
-            </td>
-            <td className={styles.contest_details}>
-              <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                <button className={styles.details_button} onClick={() => handleContestClick(contest._id)}>
-                  <IoMdArrowRoundForward size={'clamp(20px, 2.5vw, 24px)'} color="white" />
-                </button>
-              </Box>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    );
+  const listForTab = () => {
+    if (activeTab === 'ongoing') return ongoingContests;
+    if (activeTab === 'notStarted') return notStartedContests;
+    return endedContests;
   };
 
-  if (loading) {
-    return <LoadingIcon />;
-  }
+  if (loading) return <LoadingIcon />;
 
   return (
     <div className={styles.contest_list_container}>
       <div className={styles.contest_list_title}>Contests</div>
+
+      {/* 🌟 플로팅 Add Contest 버튼 */}
+      <button
+        className={styles.floating_add_button}
+        onClick={() => navigate('/contest/add')}
+      >
+        <span className={styles.icon}>🏆</span>
+        <span className={styles.text}>Add Contest</span>
+      </button>
+
       <div className={styles.tabs}>
         <button
           className={`${styles.tab_button} ${activeTab === 'ongoing' ? styles.active : ''}`}
@@ -142,12 +85,14 @@ const ContestList: React.FC = () => {
         >
           <p>Ongoing</p>
         </button>
+
         <button
           className={`${styles.tab_button} ${activeTab === 'notStarted' ? styles.active : ''}`}
           onClick={() => setActiveTab('notStarted')}
         >
           <p>Not Started</p>
         </button>
+
         <button
           className={`${styles.tab_button} ${activeTab === 'ended' ? styles.active : ''}`}
           onClick={() => setActiveTab('ended')}
@@ -155,21 +100,44 @@ const ContestList: React.FC = () => {
           <p>Ended</p>
         </button>
       </div>
-      <table className={styles.contest_list_table}>
-        <thead>
-          <tr className={styles.table_text_box}>
-            <th className={styles.table_name}>Name</th>
-            <th className={styles.table_start_time}>Start Time</th>
-            <th className={styles.table_end_time}>End Time</th>
-            <th className={styles.table_reward}>Reward</th>
-            <th className={styles.table_details}>Details</th>
-          </tr>
-        </thead>
-        {renderContests()}
-      </table>
+
+      {/* 카드 리스트 */}
+      <div className={styles.card_grid}>
+        {listForTab().map((contest) => (
+          <div
+            key={contest._id}
+            className={styles.card_item}
+            onClick={() => handleContestClick(contest._id)}
+          >
+            <Avatar
+              variant="rounded"
+              className={styles.card_avatar}
+              sx={{
+                backgroundColor:
+                  avatarBackgroundColors[getAvatarColorIndex(contest.name)],
+              }}
+            >
+              {contest.name.charAt(0).toUpperCase()}
+            </Avatar>
+
+            <div className={styles.card_title}>
+              {contest.name.charAt(0).toUpperCase() + contest.name.slice(1)}
+            </div>
+
+            <div className={styles.card_info}>
+              <p>📅 Start: {formatDate(contest.startTime)}</p>
+              <p>⏳ End: {formatDate(contest.endTime)}</p>
+              <p>⭐ Reward: {contest.contestExp} EXP</p>
+            </div>
+
+            <button className={styles.details_button}>
+              <IoMdArrowRoundForward size={24} />
+            </button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
 
 export default ContestList;
-

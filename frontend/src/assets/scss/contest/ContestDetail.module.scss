@@ -1,160 +1,207 @@
+@use "../style" as *;
+
+:root {
+  --mint: #8BF3FF;
+  --mint-glow: rgba(139, 243, 255, 0.55);
+  --white: #EFFFFF;
+  --bg-dark: #02070d;
+}
+
+/* =========================================================
+   PAGE BACKGROUND (CRT + Radial)
+   ========================================================= */
 .contest_detail_container {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    border-radius: clamp(16px, 3vw, 30px);
-    background: var(--secondary-layout);
+  @include background_set;
+  width: 100%;
+  height: 100%;
+  padding: clamp(8px, 1vw, 20px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  backdrop-filter: blur(30px);
 
-    .box_upper_content {
-        display: flex;
-        justify-content: space-between;
-        height: 100%;
-        padding: clamp(24px, 4vw, 48px) clamp(24px, 4vw, 48px) clamp(16px, 2vw, 16px);
-        flex-grow: 1;
-        gap: clamp(16px, 3vw, 32px);
+  /* CRT SCANLINES */
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.04) 0px,
+      rgba(255, 255, 255, 0.02) 1px,
+      transparent 2px
+    );
+    opacity: 0.06;
+    pointer-events: none;
+  }
 
-        @media (max-width: 768px) {
-            flex-direction: column;
-            align-items: center;
-            padding: 16px;
-            gap: 16px;
-        }
+  /* Subtle glitch animation */
+  animation: subtleGlitch 5s infinite ease-in-out;
+  @keyframes subtleGlitch {
+    0%, 100% { transform: translate(0,0); }
+    48% { transform: translate(-0.4px, 0.4px); }
+    52% { transform: translate(0.4px, -0.4px); }
+  }
+}
 
-        .avatar_container {
-            width: clamp(100px, 15vw, 150px);
-            flex-shrink: 0;
-            aspect-ratio: 1 / 1;
+/* =========================================================
+   DETAIL CARD
+   ========================================================= */
+.contest_detail_page {
+  width: 100%;
+  min-height: 40%;
+  padding: clamp(12px, 2vw, 24px);
+  position: relative;
+}
 
-            @media (max-width: 768px) {
-                width: clamp(80px, 20vw, 100px);
-            }
-        }
+.box_upper_content {
+  width: 100%;
+  border-radius: clamp(16px, 2vw, 24px);
+  padding: clamp(24px, 4vw, 48px);
+  display: flex;
+  gap: clamp(16px, 2vw, 32px);
+  justify-content: space-between;
+  background: rgba(8, 20, 28, 0.55);
+  border: 1.5px solid rgba(139, 243, 255, 0.25);
+  box-shadow: 0 0 26px rgba(139, 243, 255, 0.18);
+  backdrop-filter: blur(25px);
 
-        .contest_textbox {
-            color: var(--color-white);
-            height: auto;
-            flex-basis: 30%;
+  @media (max-width: 768px) {
+    flex-direction: column;
+    text-align: center;
+  }
 
-            @media (max-width: 768px) {
-                width: 100%;
-                text-align: center;
-            }
+  /* Light CRT Pulse */
+  animation: cardPulse 7s infinite ease-in-out;
+  @keyframes cardPulse {
+    0%,100% { filter: brightness(1); }
+    50% { filter: brightness(1.08); }
+  }
+}
 
-            .contest_name {
-                position: relative;
-                height: auto;
-                text-align: left;
-                font-size: clamp(1.5rem, 3vw, 48px);
-                font-weight: 900;
-                filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
-                margin-bottom: clamp(8px, 2vw, 16px);
-                text-wrap: nowrap;
-                text-overflow: ellipsis;
-                overflow: hidden;
-                @media (max-width: 768px) {
-                    text-align: center;
-                }
-            }
+/* =========================================================
+   LEFT: AVATAR (네온 강조)
+   ========================================================= */
+.avatar_container {
+  width: clamp(100px, 15vw, 150px);
+  aspect-ratio: 1/1;
 
-            .contest_description {
-                padding-left: clamp(8px, 2vw, 16px);
-                font-size: clamp(1rem, 2vw, 20px);
-                line-height: 1.4;
+  .MuiAvatar-root {
+    border: 1.5px solid var(--mint);
+    box-shadow: 0 0 16px var(--mint), 0 0 26px var(--mint-glow);
+    transition: all 0.3s ease;
 
-                @media (max-width: 768px) {
-                    padding: 8px;
-                    text-align: center;
-                }
-            }
-
-            .contest_machines {
-                margin-top: clamp(8px, 1.5vw, 10px);
-                padding-left: clamp(8px, 2vw, 16px);
-                line-height: 1.4;
-                font-size: clamp(1rem, 2vw, 20px);
-
-                @media (max-width: 768px) {
-                    padding: 8px;
-                    text-align: center;
-                }
-
-                li {
-                    padding-left: clamp(8px, 2vw, 16px);
-                    margin-top: 4px;
-                }
-            }
-        }
-
-        .right_part {
-            display: flex;
-            flex-basis: 51%;
-            justify-content: space-between;
-            gap: clamp(16px, 3vw, 32px);
-
-            @media (max-width: 768px) {
-                flex-direction: column;
-                align-items: center;
-                width: 100%;
-            }
-
-            .time_box {
-                margin-top: clamp(120px, 3vw, 160px);
-                margin-left: clamp(16px, 1vw, 150px);
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 8px;
-
-                @media (max-width: 768px) {
-                    margin-left: 0;
-                    display: none;
-                }
-        
-
-                .time_text {
-                    white-space: pre-line;
-                    color: var(--color-white);
-                    font-size: clamp(16px, 1.5vw, 24px);
-                    font-weight: 600;
-                    text-align: right;
-                    margin-top: 8px;
-                    text-wrap: nowrap;
-                    text-overflow: ellipsis;
-                    overflow: hidden;
-
-                    @media (max-width: 768px) {
-                        text-align: center;
-                    }
-                }
-            }
-
-            .contest_reward_box {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                width: clamp(140px, 15vw, 180px);
-                border-radius: clamp(4px, 2vw, 8px);
-                background-color: var(--color-layout);
-                height: clamp(60px, 8vh, 77px);
-                font-weight: 600;
-
-                .text,
-                .reward_text {
-                    padding-left: clamp(12px, 3vw, 30px);
-                    padding-right: clamp(12px, 3vw, 30px);
-                }
-
-                .text {
-                    color: var(--color-white);
-                    font-size: clamp(14px, 2vw, 16px);
-                }
-
-                .reward_text {
-                    white-space: nowrap;
-                    font-size: clamp(18px, 2vw, 24px);
-                    color: #fbff8f;
-                }
-            }
-        }
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 22px var(--mint), 0 0 36px var(--mint-glow);
     }
+  }
+}
+
+/* =========================================================
+   MIDDLE: TEXTBOX
+   ========================================================= */
+.contest_textbox {
+  flex-basis: 30%;
+  color: var(--white);
+  text-shadow: 0 0 6px rgba(139, 243, 255, 0.2);
+
+  .contest_name {
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    font-weight: 700;
+    color: var(--mint);
+    text-shadow: 0 0 14px var(--mint);
+    margin-bottom: clamp(8px, 1vw, 16px);
+  }
+
+  .contest_description {
+    font-size: clamp(1rem, 1.5vw, 1.2rem);
+    opacity: 0.85;
+    line-height: 1.4;
+  }
+
+  .contest_machines {
+    margin-top: clamp(8px, 1vw, 16px);
+    font-size: clamp(1rem, 1.5vw, 1.2rem);
+    line-height: 1.5;
+  }
+}
+
+/* =========================================================
+   RIGHT: TIME + REWARD BOX
+   ========================================================= */
+.right_part {
+  flex-basis: 45%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 16px;
+  }
+}
+
+/* TIME BOX */
+.time_box {
+  .time_text {
+    white-space: pre-line;
+    text-align: right;
+    color: var(--white);
+    font-size: clamp(1rem, 1.5vw, 1.3rem);
+    font-weight: 600;
+    text-shadow: 0 0 8px rgba(139, 243, 255, 0.3);
+
+    @media (max-width: 768px) {
+      text-align: center;
+    }
+  }
+}
+
+/* REWARD BOX (네온 Pulse) */
+.contest_reward_box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: clamp(140px, 15vw, 180px);
+  height: clamp(60px, 8vh, 77px);
+  background: rgba(8, 20, 28, 0.55);
+  border: 1.5px solid rgba(139, 243, 255, 0.35);
+  box-shadow: 0 0 14px rgba(139, 243, 255, 0.25);
+  border-radius: 8px;
+  padding: clamp(8px, 1vw, 16px);
+
+  .text {
+    color: var(--white);
+    font-size: clamp(0.9rem, 1.5vw, 1rem);
+  }
+
+  .reward_text {
+    color: var(--mint);
+    font-weight: 700;
+    font-size: clamp(1.3rem, 1.8vw, 1.6rem);
+    text-shadow: 0 0 10px var(--mint);
+  }
+
+  animation: mintPulse 3s infinite ease-in-out;
+}
+
+/* 네온 Pulse */
+@keyframes mintPulse {
+  0%,100% { box-shadow: 0 0 10px var(--mint); }
+  50% { box-shadow: 0 0 28px var(--mint); }
+}
+
+/* =========================================================
+   LEADERBOARD BOX
+   ========================================================= */
+.contestLeaderboardTable {
+  width: 100%;
+  backdrop-filter: blur(25px);
+  background: rgba(8, 20, 28, 0.45);
+  border-radius: clamp(16px, 2vw, 20px);
+  border: 1.5px solid rgba(139, 243, 255, 0.25);
+  box-shadow: 0 0 20px rgba(139, 243, 255, 0.12);
+  margin-top: clamp(12px, 1vw, 20px);
 }

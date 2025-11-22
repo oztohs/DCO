@@ -1,246 +1,215 @@
 @use "../style" as *;
 
 .contest_list_container {
-    background: var(--color-background-transparent);
-    width: 100%;
-    height: 100%;
-    overflow-y: hidden;
-    padding: clamp(16px, 3vw, 32px) clamp(24px, 4vw, 48px);
+  width: 100%;
+  height: 100%;
+  padding: clamp(20px, 3vw, 32px);
+  border-radius: clamp(16px, 2vw, 24px);
+
+  backdrop-filter: blur(25px);
+  background: rgba(8, 20, 30, 0.35);
+  border: 1.5px solid rgba(139, 243, 255, 0.22);
+  box-shadow: 0 0 24px rgba(139, 243, 255, 0.12);
+  position: relative;
+  overflow: hidden;
+
+  /* CRT */
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(255,255,255,0.03) 0px,
+      rgba(255,255,255,0.02) 1px,
+      transparent 2px
+    );
+    opacity: 0.12;
+    pointer-events: none;
+  }
+
+  .contest_list_title {
+    font-family: 'Orbitron', sans-serif;
+    color: #8BF3FF;
+    text-shadow: 0 0 10px #8BF3FF;
+    font-size: clamp(2rem, 3vw, 2.5rem);
+    margin-bottom: clamp(22px, 2vw, 30px);
+    position: relative;
+
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      width: 80px;
+      height: 2px;
+      background: #8BF3FF;
+      box-shadow: 0 0 12px #8BF3FF;
+    }
+  }
+
+  /* ---------- Tabs ---------- */
+  .tabs {
     display: flex;
-    flex-direction: column;
-    gap: clamp(8px, 1.5vw, 12px);
-    border-radius: clamp(16px, 2vw, 24px);
-    border: 1px solid var(--blue-200);
-    transition: all 0.3s ease-in-out;
+    gap: clamp(8px, 2vw, 16px);
+    margin-bottom: clamp(24px, 3vw, 32px);
 
-    @media (max-width: 768px) {
-        padding: 16px;
-        gap: 8px;
+    .tab_button {
+      padding: clamp(10px, 1vw, 14px) clamp(22px, 2.3vw, 32px);
+      background: rgba(8, 20, 30, 0.45);
+      border: 1px solid rgba(139, 243, 255, 0.25);
+      border-radius: 10px;
+      color: #fff;
+      font-family: 'Orbitron';
+      cursor: pointer;
+      transition: 0.25s ease;
+
+      &:hover {
+        background: rgba(139, 243, 255, 0.12);
+        box-shadow: 0 0 12px rgba(139,243,255,0.25);
+        transform: translateY(-2px);
+      }
     }
 
-    .no_data{
-        display: flex;
-        justify-content: center;
-        font-size: var(--font-size-small);
-        color: var(--color-white-200);
+    .active {
+      background: rgba(139, 243, 255, 0.25);
+      border-color: rgba(139,243,255,0.8);
+      box-shadow: 0 0 16px rgba(139,243,255,0.4);
+      transform: translateY(-2px);
     }
-    .tabs {
-        display: flex;
-        margin: 0 clamp(8px, 2vw, 16px);
-        
-        @media (max-width: 768px) {
-            overflow-x: auto;
-            margin: 0;
-            @include scrollbar-none;
-        }
+  }
 
-        p {
-            font-weight: bold;
-        }
-        .tab_button {
-            min-width: clamp(100px, 15vw, 120px);
-            padding: clamp(6px, 1.5vw, 8px) clamp(16px, 2vw, 24px);
-            border-right: 1px solid var(--color-list-border);
-            border-left: 1px solid var(--color-list-border);
-            background: var(--color-background-transparent);
-            cursor: pointer;
-            transition: all 0.3s ease-in-out;
-            color: var(--color-white);
-            font-size: clamp(0.875rem, 1.5vw, var(--font-size-small));
+  /* ---------- CARD GRID ---------- */
+  .card_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: clamp(16px, 2vw, 26px);
+    margin-top: clamp(16px, 2vw, 26px);
+  }
 
-            &:hover {
-                background: var(--blue-400);
-                transform: translateY(-2px);
-                filter: drop-shadow(0 0 10px var(--blue-500));
-            }
-        }
+  /* ---------- CARD ITEM ---------- */
+  .card_item {
+    padding: clamp(20px, 2vw, 26px);
+    border-radius: 16px;
+    background: rgba(8, 20, 30, 0.4);
+    border: 1.5px solid rgba(139, 243, 255, 0.25);
+    box-shadow: 0 0 18px rgba(139, 243, 255, 0.12);
+    backdrop-filter: blur(14px);
+    cursor: pointer;
+    transition: 0.28s ease;
+    position: relative;
+    overflow: hidden;
 
-        .active {
-            filter: drop-shadow(0 0 10px var(--blue-300));
-            transform: translateY(-2px);
-        }
-    }
-
-    .contest_list_title {
-        display: flex;
-        position: relative;
-        font-size: clamp(2rem, 3vw, 2.5rem);
-        letter-spacing: -0.01em;
-        font-weight: 600;
-        color: var(--color-white);
-        text-align: left;
-        height: clamp(48px, 6vh, 62px);
+    /* CRT scanline layer */
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.04) 0px,
+        rgba(255,255,255,0.02) 1px,
+        transparent 3px
+      );
+      opacity: 0.17;
+      pointer-events: none;
     }
 
-    .contest_list_table {
-        width: 100%;
-        display: table;
-        flex-direction: column;
-        border-collapse: collapse;
-
-        @media (max-width: 768px) {
-          display: block;
-        }
-
-        tbody {
-          @include scrollbar-none;
-          display: block;
-          overflow-y: auto;
-          max-height: clamp(250px, 50vh, 350px);
-
-          @media (max-width: 768px) {
-            max-height: calc(100vh - 400px);
-          }
-
-          tr {
-            display: table;
-            width: 100%;
-            table-layout: fixed;
-          }
-        }
-
-        thead {
-          display: table;
-          width: 100%;
-          position: sticky;
-          top: 0;
-          background-color: var(--color-background);
-          z-index: 1;
-          table-layout: fixed;
-
-          @media (max-width: 768px) {
-            display: none;
-          }
-        }
-
-        .table_text_box {
-          width: 100%;
-          display: flex;
-          justify-content: space-between;
-          padding: clamp(12px, 2vw, 20px) clamp(16px, 2vw, 24px);
-          white-space: nowrap;
-          border-bottom: 1px solid var(--color-list-border);
-
-          th {
-            font-size: clamp(0.875rem, 1.5vw, 1rem);
-            letter-spacing: -0.01em;
-            font-weight: 600;
-            color: var(--color-white-200);
-            text-align: center;
-            padding: 0 clamp(8px, 1.5vw, 16px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          }
-
-          .table_name {
-            width: 30%;
-            text-align: left;
-            justify-content: flex-start;
-          }
-
-          .table_start_time,
-          .table_end_time {
-            width: 20%;
-            justify-content: center;
-          }
-
-          .table_reward,
-          .table_details {
-            width: 10%;
-            justify-content: center;
-          }
-        }
-
-        .contest_box {
-          width: 100%;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: clamp(8px, 1.5vw, 12px) clamp(16px, 2vw, 24px);
-          border-bottom: 1px solid var(--color-list-border);
-
-          @media (max-width: 768px) {
-            flex-wrap: wrap;
-            gap: 8px;
-            padding: 16px;
-          }
-
-          td {
-            padding: 0 clamp(8px, 1.5vw, 16px);
-            height: clamp(50px, 8vh, 70px);
-            font-size: clamp(0.875rem, 1.5vw, 1rem);
-            letter-spacing: -0.01em;
-            font-weight: 600;
-            color: var(--color-white-200);
-
-            @media (max-width: 768px) {
-              height: auto;
-              padding: 8px 0;
-            }
-          }
-
-          .contest_name {
-            width: 30%;
-            display: flex;
-            align-items: center;
-            gap: clamp(8px, 2vw, 16px);
-
-            @media (max-width: 768px) {
-              width: 100%;
-            }
-          }
-
-          .contest_start_time,
-          .contest_end_time {
-            width: 20%;
-            display: flex;
-            align-items: center;
-
-            @media (max-width: 768px) {
-              width: 50%;
-            }
-          }
-
-          .contest_reward {
-            width: 10%;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-
-            @media (max-width: 768px) {
-              width: 50%;
-            }
-          }
-
-          .contest_details {
-            width: 10%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            @media (max-width: 768px) {
-              width: 100%;
-            }
-
-            .details_button {
-              justify-content: center;
-              align-items: center;
-              width: clamp(32px, 5vw, 40px);
-              height: clamp(32px, 5vw, 40px);
-              border: 2px solid transparent;
-              border-radius: 50%;
-              background-color: var(--color-layout);
-              transition: all 0.3s ease-in-out;
-              cursor: pointer;
-
-              &:hover {
-                background-color: var(--blue-400);
-                filter: drop-shadow(0 0 10px var(--blue-500));
-                transform: translateY(-2px);
-              }
-            }
-          }
-        }
+    &:hover {
+      transform: translateY(-6px) scale(1.015);
+      border-color: rgba(139, 243, 255, 0.55);
+      box-shadow: 0 0 24px rgba(139,243,255,0.35);
     }
+
+    .card_avatar {
+      width: clamp(50px, 6vw, 70px);
+      height: clamp(50px, 6vw, 70px);
+      border-radius: 12px;
+      margin-bottom: 16px;
+      box-shadow: 0 0 12px rgba(139,243,255,0.4);
+      font-size: clamp(1.3rem, 2.2vw, 2rem);
+    }
+
+    .card_title {
+      font-family: 'Orbitron';
+      font-size: clamp(1.3rem, 2vw, 1.6rem);
+      color: white;
+      text-shadow: 0 0 10px rgba(255,255,255,0.35);
+      margin-bottom: clamp(8px, 1vw, 12px);
+    }
+
+    .card_info {
+      font-family: 'VT323', monospace;
+      font-size: clamp(1rem, 1.6vw, 1.2rem);
+      color: #c5faff;
+      margin-bottom: clamp(20px, 1.5vw, 28px);
+
+      p {
+        margin: 4px 0;
+      }
+    }
+
+    .details_button {
+      width: fit-content;
+      padding: 10px 16px;
+      border-radius: 10px;
+      border: 1.5px solid rgba(139,243,255,0.5);
+      background: rgba(8,20,30,0.6);
+      color: white;
+      font-family: 'Orbitron';
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-left: auto;
+      transition: 0.25s ease;
+
+      &:hover {
+        background: rgba(139,243,255,0.25);
+        box-shadow: 0 0 12px rgba(139,243,255,0.4);
+        transform: translateX(4px);
+      }
+    }
+  }
+
+  /* ---------- FLOATING ADD BUTTON ---------- */
+  .floating_add_button {
+    position: fixed;
+    bottom: clamp(24px, 4vw, 36px);
+    right: clamp(24px, 4vw, 36px);
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 14px 22px;
+    border-radius: 14px;
+
+    font-family: 'Orbitron';
+    font-size: clamp(14px, 1.5vw, 18px);
+    font-weight: 700;
+    color: #EFFFFF;
+
+    background: rgba(10, 30, 45, 0.65);
+    border: 2px solid rgba(139, 243, 255, 0.4);
+    box-shadow: 0 0 12px rgba(139, 243, 255, 0.4);
+
+    backdrop-filter: blur(6px);
+    cursor: pointer;
+    z-index: 999;
+
+    transition: all 0.25s ease;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 0 18px rgba(139, 243, 255, 0.7);
+    }
+
+    &:active {
+      transform: translateY(-1px);
+    }
+
+    .icon {
+      font-size: clamp(18px, 2vw, 22px);
+    }
+  }
 }
