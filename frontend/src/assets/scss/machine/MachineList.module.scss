@@ -221,3 +221,35 @@
   box-shadow: 0 0 12px var(--mint);
   transform: translateY(-2px);
 }
+.detail_buttons_wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+.toggle_button {
+  width: 40px;
+  height: 40px;
+  font-size: 1.4rem;
+  font-family: 'Orbitron', sans-serif;
+  border: 1.5px solid var(--mint);
+  background: transparent;
+  color: var(--mint);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.go_button {
+  width: 68px;
+  height: 40px;
+  border: 1.5px solid var(--mint);
+  background: transparent;
+  color: var(--mint);
+  border-radius: 8px;
+  font-family: 'VT323', monospace;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
