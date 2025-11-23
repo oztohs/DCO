@@ -10,6 +10,8 @@ import ClickAwayListener from '@mui/material/ClickAwayListener';
 import { getAvatarColorIndex, avatarBackgroundColors } from '../../utils/avatars';
 import LoadingIcon from '../public/LoadingIcon';
 import ErrorIcon from '../public/ErrorIcon';
+import CatIcon from '../../assets/img/icon/white_cat.png';
+
 
 interface Machine {
   _id: string;
@@ -170,7 +172,15 @@ const MachineList: React.FC = () => {
                           fontSize: '16px',
                         }}
                       >
-                        {machine.name.charAt(0).toUpperCase()}
+                          <img
+                            src={CatIcon}
+                            alt="cat"
+                            style={{
+                            width: '70%',          // 네모박스 안에 자연스럽게 들어오게 조절
+                            height: '70%',
+                            objectFit: 'contain',
+                          }}
+                       />
                       </Avatar>
                       <span>{machine.name}</span>
                     </Box>
